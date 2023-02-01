@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Grafting_Activity">
+
+    <TextView
+        android:id="@+id/cool_tv1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="26dp"
+        android:layout_marginEnd="26dp"
+        android:layout_marginTop="33dp"
+        android:fontFamily="@font/poppinsbold"
+        android:text="Separate rotting seeds"
+        android:textColor="@color/black"
+        android:textSize="26sp"
+        android:textStyle="bold"></TextView>
+
+    <TextView
+        android:id="@+id/cool_tv2"
+        android:layout_width="306dp"
+        android:layout_height="107dp"
+        android:layout_marginStart="26dp"
+        android:layout_marginTop="20dp"
+        android:elegantTextHeight="true"
+        android:fontFamily="@font/poppinsmedium"
+        android:text="El Mundo is one of the most famous newspapers daily in Spain the online version"
+        android:textColor="@color/black"
+        android:textSize="20sp"></TextView>
+
+
+    <LinearLayout
+        android:layout_width="427dp"
+        android:layout_height="477dp"
+        android:layout_marginEnd="79dp"
+        android:gravity="bottom"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/cameraReasult"
+            android:layout_width="427dp"
+            android:layout_height="323dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="79dp"
+            android:layout_marginEnd="21dp"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/seeds" />
+
+        <LinearLayout
+            android:layout_width="333dp"
+            android:layout_height="76dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="33dp"
+            android:layout_marginBottom="26dp"
+            android:orientation="horizontal"
+            android:padding="3dp">
+
+            <Button
+                android:id="@+id/upload"
+                android:layout_width="213dp"
+                android:layout_height="59dp"
+                android:background="@drawable/bg_round"
+                android:text="Upload photo"
+                android:textAllCaps="false"
+                android:textSize="16sp" />
+
+            <ImageButton
+                android:id="@+id/openCamera"
+                android:layout_width="98dp"
+                android:layout_height="64dp"
+                android:layout_marginStart="33dp"
+                android:background="#fff"
+                android:src="@drawable/ic_camera_alt" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
