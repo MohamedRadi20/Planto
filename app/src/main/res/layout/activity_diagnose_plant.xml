@@ -43,12 +43,23 @@
         <ImageView
             android:id="@+id/cameraReasult"
             android:layout_width="427dp"
-            android:layout_height="323dp"
+            android:layout_height="273dp"
             android:layout_gravity="center"
             android:layout_marginStart="79dp"
             android:layout_marginEnd="21dp"
             android:layout_marginBottom="16dp"
             android:src="@drawable/diagnoseplant" />
+
+        <Button
+            android:id="@+id/predict"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_round"
+            android:text="Predict"
+            android:onClick="predict"
+            android:layout_marginStart="20dp"
+            android:textAllCaps="false"
+            android:textSize="16sp" />
 
         <LinearLayout
             android:layout_width="333dp"
