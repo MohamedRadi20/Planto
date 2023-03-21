@@ -45,6 +45,7 @@ public class Home_Fragment extends Fragment {
         separate_seeds_service.setAnimation(left);
         grating_compatibility_service.setAnimation(right);
 
+
         name = (TextView) getActivity().findViewById(R.id.name);
         name.setText("Straw Hats");
 

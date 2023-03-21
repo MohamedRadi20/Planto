@@ -1,5 +1,7 @@
 package com.example.planto;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -8,8 +10,11 @@ import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Shader;
 import android.os.Bundle;
+import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,29 +25,50 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class Registration_Activity extends AppCompatActivity {
+    FirebaseDatabase database;
+    DatabaseReference reference;
+    FirebaseAuth mAuth;
+    EditText name, email, password;
 
-    TextInputEditText name , email , password ;
-    Button submit ;
-    String name_ , email_ , password_ ;
-    TextView error , tv , signNow;
-    ProgressBar progressBar ;
+    Button submit;
+    String name_, email_, password_;
+    TextView error, tv, signNow;
+    ProgressBar progressBar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
-        name = (TextInputEditText) findViewById(R.id.name);
-        email = (TextInputEditText) findViewById(R.id.email);
-        password = (TextInputEditText) findViewById(R.id.password);
+        name = (EditText) findViewById(R.id.name);
+        email = (EditText) findViewById(R.id.email);
+        password = (EditText) findViewById(R.id.password);
         error = (TextView) findViewById(R.id.error);
         progressBar = (ProgressBar) findViewById(R.id.loading);
-
+        database = FirebaseDatabase.getInstance();
+        reference = database.getReference("users");
+        mAuth = FirebaseAuth.getInstance();
         tv = findViewById(R.id.tv);
         Paint paint = tv.getPaint();
 
@@ -56,46 +82,24 @@ public class Registration_Activity extends AppCompatActivity {
             public void onClick(View view) {
                 error.setVisibility(View.GONE);
                 progressBar.setVisibility(View.VISIBLE);
-                name_ = String.valueOf(name.getText());
-                email_ = String.valueOf(email.getText());
-                password_ = String.valueOf(password.getText());
-                RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-                String url ="http://localhost/login-registration-android/register.php";
-
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                progressBar.setVisibility(View.GONE);
-                                if(response.equals("success")){
-                                    Toast.makeText(getApplicationContext(), "Registered successfully", Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(getApplicationContext(), Login_Activity.class);
-                                    startActivity(intent);
-                                    finish();
-                                }
-                                else {
-                                    error.setText(response);
-                                    error.setVisibility(View.VISIBLE);
-                                }
-
-                            }
-                        }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error_) {
-                        progressBar.setVisibility(View.GONE);
-                        error.setText(error_.getLocalizedMessage());
-                        error.setVisibility(View.VISIBLE);
+                name_ = name.getText().toString();
+                email_ = email.getText().toString();
+                password_ = password.getText().toString();
+                // Create a new user account with email and password
+                if (!email_.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(email_).matches()) {
+                    if (!password_.isEmpty()) {
+                        createUser();
+                    } else {
+                        password.setError("Password is empty");
+                        progressBar.setVisibility(View.INVISIBLE);
                     }
-                }){
-                    protected Map<String, String> getParams(){
-                        Map<String, String> paramV = new HashMap<>();
-                        paramV.put("name", name_);
-                        paramV.put("email", email_);
-                        paramV.put("password", password_);
-                        return paramV;
-                    }
-                };
-                queue.add(stringRequest);
+                } else if (email_.isEmpty()) {
+                    email.setError("Email is empty");
+                    progressBar.setVisibility(View.INVISIBLE);
+                } else {
+                    email.setError("Enter correct email");
+                    progressBar.setVisibility(View.INVISIBLE);
+                }
             }
         });
         signNow = findViewById(R.id.signNow);
@@ -108,6 +112,32 @@ public class Registration_Activity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public void createUser() {
+        mAuth.createUserWithEmailAndPassword(email_, password_)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            Toast.makeText(getApplicationContext(), "user created",
+                                    Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(getApplicationContext(), Login_Activity.class);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Toast.makeText(getApplicationContext(), task.getException().getMessage(),
+                                    Toast.LENGTH_LONG).show();
+                            progressBar.setVisibility(View.INVISIBLE);
+
+                        }
+                    }
+                });
+        Users user = new Users(name_, email_, password_);
+        reference.child(name_).setValue(user);
     }
 
 }
