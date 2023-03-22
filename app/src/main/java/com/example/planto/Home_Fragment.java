@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
+import pl.droidsonroids.gif.GifImageView;
+
 /**
  * A simple {@link Fragment} subclass.
  * create an instance of this fragment.
@@ -28,18 +30,21 @@ public class Home_Fragment extends Fragment {
     public void onStart (){
         super.onStart();
         TextView name;
-        ImageView plant_disease_service , identify_plant_service , separate_seeds_service , grating_compatibility_service;
-        Animation left , right ;
+        ImageView  plant_disease_service , identify_plant_service , separate_seeds_service , grating_compatibility_service;
+        GifImageView home_sun ;
+        Animation left , right , down ;
 
-
+        home_sun = getActivity().findViewById(R.id.home_sun);
         plant_disease_service = getActivity().findViewById(R.id.plant_disease_service);
         identify_plant_service = getActivity().findViewById(R.id.identify_plant_service);
         separate_seeds_service = getActivity().findViewById(R.id.separate_seeds_service);
         grating_compatibility_service = getActivity().findViewById(R.id.grating_compatibility_service);
 
+        down = AnimationUtils.loadAnimation(getActivity().getApplicationContext(),R.anim.down);
         left = AnimationUtils.loadAnimation(getActivity().getApplicationContext(),R.anim.left);
         right = AnimationUtils.loadAnimation(getActivity().getApplicationContext(),R.anim.right);
 
+        home_sun.setAnimation(down);
         plant_disease_service.setAnimation(left);
         identify_plant_service.setAnimation(right);
         separate_seeds_service.setAnimation(left);

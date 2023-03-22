@@ -22,6 +22,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.textfield.TextInputEditText;
 
+import org.checkerframework.common.reflection.qual.NewInstance;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,8 +31,7 @@ public class Registration_Activity extends AppCompatActivity {
 
     TextInputEditText name , email , password ;
     Button submit ;
-    String name_ , email_ , password_ ;
-    TextView error , tv , signNow;
+    TextView error , tv, signNow ;
     ProgressBar progressBar ;
 
     @Override
@@ -47,67 +48,25 @@ public class Registration_Activity extends AppCompatActivity {
         Paint paint = tv.getPaint();
 
         Shader shader = paint.setShader(new LinearGradient(0, 0, tv.getPaint().measureText(tv.getText().toString()), tv.getTextSize(),
-                new int[]{Color.parseColor("#FF979797"), Color.parseColor("#4CAF50")},
+                new int[]{Color.parseColor("#FF979797"), Color.parseColor("#1B6354")},
                 new float[]{0, 1}, Shader.TileMode.CLAMP));
 
         submit = (Button) findViewById(R.id.submit);
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                error.setVisibility(View.GONE);
-                progressBar.setVisibility(View.VISIBLE);
-                name_ = String.valueOf(name.getText());
-                email_ = String.valueOf(email.getText());
-                password_ = String.valueOf(password.getText());
-                RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-                String url ="http://localhost/login-registration-android/register.php";
 
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                progressBar.setVisibility(View.GONE);
-                                if(response.equals("success")){
-                                    Toast.makeText(getApplicationContext(), "Registered successfully", Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(getApplicationContext(), Login_Activity.class);
-                                    startActivity(intent);
-                                    finish();
-                                }
-                                else {
-                                    error.setText(response);
-                                    error.setVisibility(View.VISIBLE);
-                                }
-
-                            }
-                        }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error_) {
-                        progressBar.setVisibility(View.GONE);
-                        error.setText(error_.getLocalizedMessage());
-                        error.setVisibility(View.VISIBLE);
-                    }
-                }){
-                    protected Map<String, String> getParams(){
-                        Map<String, String> paramV = new HashMap<>();
-                        paramV.put("name", name_);
-                        paramV.put("email", email_);
-                        paramV.put("password", password_);
-                        return paramV;
-                    }
-                };
-                queue.add(stringRequest);
             }
         });
         signNow = findViewById(R.id.signNow);
         signNow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), Login_Activity.class);
-                startActivity(intent);
-                finish();
+              Intent intent = new Intent(getApplicationContext(), Login_Activity.class);
+              startActivity(intent);
+              finish();
             }
         });
-
     }
 
 }

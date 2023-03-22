@@ -14,3 +14,8 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Planto"
 include ':app'
+
+include ':openCVLibrary3413'
+include ':openCVLibrary3413'
+include ':openCVLibrary3413'
+include ':sdk'

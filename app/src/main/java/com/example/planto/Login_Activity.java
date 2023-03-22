@@ -41,7 +41,7 @@ public class Login_Activity extends AppCompatActivity {
         Paint paint = tv.getPaint();
 
         Shader shader = paint.setShader(new LinearGradient(0, 0, tv.getPaint().measureText(tv.getText().toString()), tv.getTextSize(),
-                new int[]{Color.parseColor("#FF979797"), Color.parseColor("#4CAF50")},
+                new int[]{Color.parseColor("#FF979797"), Color.parseColor("#1B6354")},
                 new float[]{0, 1}, Shader.TileMode.CLAMP));
 
         if(sharedPreferences.getString("logged","false").equals("true")){

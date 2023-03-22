@@ -3,6 +3,7 @@ package com.example.planto;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,7 +19,20 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import org.opencv.android.OpenCVLoader;
+
 public class MainActivity extends AppCompatActivity {
+
+    static {
+        if(OpenCVLoader.initDebug()){
+            Log.d("bla","uhhh");
+
+        }else {
+
+            Log.d("bla","fuck");
+        }
+
+    }
 
     public void plant_disease_service(View view){
         Intent intent = new Intent(getApplicationContext(), Diagnose_Plant_Activity.class);
@@ -31,12 +45,12 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
     public void separate_seeds_service(View view){
-        Intent intent = new Intent(getApplicationContext(), Seeds_Activity.class);
+        Intent intent = new Intent(getApplicationContext(), Soil_Activity.class);
         startActivity(intent);
         finish();
     }
     public void grating_compatibility_service(View view){
-        Intent intent = new Intent(getApplicationContext(), Grafting_Activity.class);
+        Intent intent = new Intent(getApplicationContext(), Weed_Activity.class);
         startActivity(intent);
         finish();
     }

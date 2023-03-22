@@ -35,15 +35,17 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import pl.droidsonroids.gif.GifImageView;
+
 public class Diagnose_Plant_Activity extends AppCompatActivity {
     private final int GALLERY_RQ_CODE = 1000;
-    ImageButton imageButton ;
-    ImageView imageView;
-    Button buttonUpload;
-    Animation left , right ;
+    ImageView imageView_dummy , imageView_arrow;
+    GifImageView imageView_button;
+    Animation animation_left , animation_right, fade_in;
+    Button upload_button;
     TextView textView1 , textView2;
-    int imageSize = 32;
-    String Result = "" , s;
+    int imageSize = 64;
+    String First_Result = "" , s , Second_Result = "" ;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -51,9 +53,11 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_diagnose_plant);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        imageView = findViewById(R.id.cameraReasult);
-        imageButton = findViewById(R.id.openCamera);
-        buttonUpload = findViewById(R.id.upload);
+
+        imageView_dummy = findViewById(R.id.cameraReasult);
+        imageView_button = findViewById(R.id.openCamera);
+        imageView_arrow = findViewById(R.id.arrow);
+        upload_button = findViewById(R.id.upload);
 
         if (ContextCompat.checkSelfPermission(Diagnose_Plant_Activity.this,
                 Manifest.permission.READ_CONTACTS)
@@ -62,7 +66,7 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
                     new String[]{Manifest.permission.CAMERA},
                     100);
         }
-        imageButton.setOnClickListener(new View.OnClickListener() {
+        imageView_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -70,7 +74,7 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
 
             }
         });
-        buttonUpload.setOnClickListener(new View.OnClickListener() {
+        upload_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent iGallary = new Intent(Intent.ACTION_PICK);
@@ -80,12 +84,18 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
         });
         textView1 = findViewById(R.id.cool_tv1);
         textView2 = findViewById(R.id.cool_tv2);
-        left = AnimationUtils.loadAnimation(this,R.anim.left);
-        right = AnimationUtils.loadAnimation(this,R.anim.right);
-        textView1.setAnimation(left);
-        textView2.setAnimation(left);
-        imageView.setAnimation(right);
+        upload_button = findViewById(R.id.upload);
 
+        animation_left = AnimationUtils.loadAnimation(this,R.anim.left);
+        animation_right = AnimationUtils.loadAnimation(this,R.anim.right);
+        fade_in = AnimationUtils.loadAnimation(this,R.anim.fade_in);
+
+        textView1.setAnimation(animation_left);
+        textView2.setAnimation(animation_left);
+        imageView_dummy.setAnimation(animation_right);
+        imageView_arrow.setAnimation(fade_in);
+        imageView_button.setAnimation(fade_in);
+        upload_button.setAnimation(fade_in);
     }
 
     public void classifyImage(Bitmap image){
@@ -93,7 +103,7 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
             Model model = Model.newInstance(getApplicationContext());
 
             // Creates inputs for reference.
-            TensorBuffer inputFeature0 = TensorBuffer.createFixedSize(new int[]{1, 32, 32, 3}, DataType.FLOAT32);
+            TensorBuffer inputFeature0 = TensorBuffer.createFixedSize(new int[]{1, 64, 64, 3}, DataType.FLOAT32);
             ByteBuffer byteBuffer = ByteBuffer.allocateDirect(4 * imageSize * imageSize * 3);
             byteBuffer.order(ByteOrder.nativeOrder());
 
@@ -118,22 +128,77 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
 
             float[] confidences = outputFeature0.getFloatArray();
             // find the index of the class with the biggest confidence.
-            int maxPos = 0;
-            float maxConfidence = 0;
+            int maxPos = 0 , secondMaxPos = 0 ;
+            float maxConfidence = 0 , secondMaxConfidence = 0 ;
+
             for (int i = 0; i < confidences.length; i++) {
                 if (confidences[i] > maxConfidence) {
                     maxConfidence = confidences[i];
                     maxPos = i;
                 }
             }
-
-            String[] classes = {"Tomato___Tomato_Yellow_Leaf_Curl_Virus", "Tomato___healthy"};
-            Result = classes[maxPos];
-            s = "";
-            for(int i = 0; i < classes.length; i++){
-                s += String.format("%s: %.1f%%\n", classes[i], confidences[i] * 100);
+            for (int i = 0; i < confidences.length; i++) {
+                if ((confidences[i] > secondMaxConfidence)&(confidences[i] != maxConfidence)) {
+                    secondMaxConfidence = confidences[i] ;
+                    secondMaxPos = i;
+                }
             }
 
+            String[] classes = {
+                    "Apple___Apple_scab",
+                    "Apple___Black_rot",
+                    "Apple___Cedar_apple_rust",
+                    "Apple___healthy",
+                    "Blueberry___healthy",
+                    "Cherry_(including_sour)___Powdery_mildew",
+                    "Cherry_(including_sour)___healthy",
+                    "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+                    "Corn_(maize)___Common_rust_",
+                    "Corn_(maize)___Northern_Leaf_Blight",
+                    "Corn_(maize)___healthy",
+                    "Grape___Black_rot",
+                    "Grape___Esca_(Black_Measles)",
+                    "Grape___Leaf_blight_(Isariopsis_Leaf_Spot)",
+                    "Grape___healthy",
+                    "Orange___Haunglongbing_(Citrus_greening)",
+                    "Peach___Bacterial_spot",
+                    "Peach___healthy",
+                    "Pepper,_bell___Bacterial_spot",
+                    "Pepper,_bell___healthy",
+                    "Potato___Early_blight",
+                    "Potato___Late_blight",
+                    "Potato___healthy",
+                    "Raspberry___healthy",
+                    "Soybean___healthy",
+                    "Squash___Powdery_mildew",
+                    "Strawberry___Leaf_scorch",
+                    "Strawberry___healthy",
+                    "Tomato___Bacterial_spot",
+                    "Tomato___Early_blight",
+                    "Tomato___Late_blight",
+                    "Tomato___Leaf_Mold",
+                    "Tomato___Septoria_leaf_spot",
+                    "Tomato___Spider_mites Two-spotted_spider_mite",
+                    "Tomato___Target_Spot",
+                    "Tomato___Tomato_Yellow_Leaf_Curl_Virus",
+                    "Tomato___Tomato_mosaic_virus",
+                    "Tomato___healthy"};
+
+            First_Result = classes[maxPos];
+            Second_Result = classes[secondMaxPos];
+
+            s += String.format("%s:      %.1f%%\n", First_Result, maxConfidence * 100);
+            s += String.format("%s:      %.1f%%\n", Second_Result, secondMaxConfidence * 100);
+
+            if(First_Result != ""){
+                textView2.setTextSize(12);
+                textView2.setTextColor(ContextCompat.getColor(textView2.getContext(), R.color.teal_700));
+                textView2.setText(s);
+            }
+//            for(int i = 0; i < classes.length; i++){
+//                s += String.format("%s: %.1f%%\n", classes[i], confidences[i] * 100);
+//            }
+            s = "";
             // Releases model resources if no longer used.
             model.close();
         } catch (IOException e) {
@@ -148,7 +213,7 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
                 Bitmap image = (Bitmap) data.getExtras().get("data");
                 int dimension = Math.min(image.getWidth(), image.getHeight());
                 image = ThumbnailUtils.extractThumbnail(image, dimension, dimension);
-                imageView.setImageBitmap(image);
+                imageView_dummy.setImageBitmap(image);
 
                 image = Bitmap.createScaledBitmap(image, imageSize, imageSize, false);
                 classifyImage(image);
@@ -160,7 +225,7 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                imageView.setImageBitmap(image);
+                imageView_dummy.setImageBitmap(image);
 
                 image = Bitmap.createScaledBitmap(image, imageSize, imageSize, false);
                 classifyImage(image);
@@ -191,10 +256,4 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
         return true;
     }
 
-    public void predict(View view){
-        if(Result != ""){
-            textView2.setText(s);
-            // textView2.setText(Result);
-        }
-    }
 }
