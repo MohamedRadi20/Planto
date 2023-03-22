@@ -1,35 +1,30 @@
-# Planto
->    ### This Android Java app is designed to help plant enthusiasts and farmers in detecting and classifying plant diseases, as well as identifying plants in real-time using object detection algorithm through the camera of their smartphones. This app provides an AR feature that is not available in any other app.
+# Planto - AI-AR App
+>    ### Planto is an android Java app that helps plant owners and farmers identify and classify plant diseases and detect plants in real-time using state-of-the-art AI algorithms. This app is built on the popular CNN TensorFlow, OpenCV, and PySlowFast libraries that provide a robust and reliable platform for image and video analysis.
 
-# Features 
+# Key Features 
 1.   ### Plant Disease Classification: 
->    This app uses a convolutional neural network (CNN) model built with TensorFlow to classify plant diseases. Users can capture a photo of the plant and upload it to the app. The app will then analyze the image and provide the user with the disease classification.
+>    The app uses a powerful CNN TensorFlow algorithm to identify and classify plant diseases by analyzing the leaves' images. To classify the plant diseases, you just have to take a picture of the leaf, and the app will provide the name and the symptoms of the disease. This feature is incredibly helpful for plant owners and farmers to take care of their plants and improve their productivity.
 
-2.   ### Object Detection: 
->    This app uses OpenCV with an object detection algorithm to detect and identify plants in real-time using the camera of the phone. The algorithm works with the camera still opened in real-time, which provides an AR experience that is not available in any other app.
+2.   ### AR Plant Detection: 
+>    Planto also has an AR feature that uses the object detection algorithm with the help of OpenCV library to detect and identify plants in real-time. You don't have to take photos here; just open your phone camera, and the app will leave it open for the object detection algorithm to do its work in real-time. This feature is unique, and no other app provides this kind of service to its users.
 
-3.   ### Community and User Accounts: 
->    Users can create accounts and authenticate with the app. This feature enables them to connect with other users and share information about plant diseases and how to prevent them.
+3.   ### Community: 
+>    The app also has a community where users can create accounts quickly and authenticate using their other accounts like Gmail or Facebook. This feature helps users stay connected, share their experiences and knowledge, and provide feedback to the developers to improve the app's functionality and usability.
 
-4.   ### Weed Detection:
->    This app uses 3D convolutional neural network (3DCNN) to classify videos that have weeds in them. The user can upload a video of the weeds, and the app will analyze it and provide the user with the classification.
+4.   ### 3D CNN Video Classification Algorithm:
+>    Planto uses advanced technology like PySlowFast by Facebook for 3DCNN video classification. This algorithm helps to classify videos that have weeds in them. This feature is essential for farmers as it helps them identify and remove weeds from their fields, leading to better crop yields.
 
 # Technologies Used
-> 1.   ### TensorFlow: 
->    TensorFlow is an open-source machine learning framework that is used to build and train machine learning models, such as the CNN model used for plant disease classification.
+*    TensorFlow
+*    OpenCV
+*    PySlowFast
+*    Android Java
+*    APIs, including the OpenAI API for accessing new AI models developed by OpenAI.
+*    The Firebase Realtime Database, which is a cloud-hosted NoSQL database that lets you store and sync data between your users in realtime.
 
-> 2.   ### OpenCV: 
->    OpenCV is an open-source computer vision library that is used for object detection and identification.
+# Installation
+>    ### To install Plant, you can download the app from the Google Play Store. The app is compatible with most Android devices and can be easily installed and configured.
 
-> 3.   ### Android Java: 
->    This app is built using Java programming language for the Android platform.
-
-> 4.   ### OpenAI API: 
->    OpenAI API is used to access new AI models developed by OpenAI, which can be used to improve the app's performance.
-
-> 5.   ### Firebase Realtime Database: 
->    Firebase Realtime Database is a cloud-hosted NoSQL database used to store and retrieve data in real-time.
-<pre><code>&lt;div class="footer"&gt;
-    &amp;copy; 2004 Foo Corporation
-&lt;/div&gt;
-</code></pre>
+   <div class="footer">
+        &copy; 2023 Graduation pro
+    </div>
