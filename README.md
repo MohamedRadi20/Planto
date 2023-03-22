@@ -1,4 +1,4 @@
-# Planto - AI-AR App 
+# Planto - AI-AR App [![Up to Date](https://github.com/ikatyang/emoji-cheat-sheet/workflows/Up%20to%20Date/badge.svg)](https://github.com/ikatyang/emoji-cheat-sheet/actions?query=workflow%3A%22Up+to+Date%22)
    #### Planto is an android Java app that helps plant owners and farmers identify and classify plant diseases and detect plants in real-time using state-of-the-art AI algorithms. This app is built on the popular CNN TensorFlow, OpenCV, and PySlowFast libraries that provide a robust and reliable platform for image and video analysis.
 
 ## Key Features 
@@ -32,8 +32,6 @@
 *    <https://openai.com/blog/openai-api/>
 *    <https://developer.android.com//>
 *    <https://firebase.google.com//>
-
-     [Contribution guidelines for this project](docs/CONTRIBUTING.md)
 
    `&#8212;` ~~This repo is still uder-dev~~ `&mdash;`.
    <div class="footer">
