@@ -22,7 +22,7 @@
 *    APIs, including the OpenAI API for accessing new AI models developed by OpenAI.
 *    The Firebase Realtime Database, which is a cloud-hosted NoSQL database that lets you store and sync data between your users in realtime.
 
-## Installation :u6307:
+## Installation :heavy_check_mark:
 #### To install Plant, you can download the app from the Google Play Store. The app is compatible with most Android devices and can be easily installed and configured.
 
 ## Related links :curly_loop:
