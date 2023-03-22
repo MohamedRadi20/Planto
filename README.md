@@ -1,4 +1,4 @@
-# Planto - AI-AR App
+# Planto - AI-AR App ![Alt text](C:\Users\reb20\AndroidStudioProjects\Planto\app\src\main\res\drawable\logo.png)
 >    ### Planto is an android Java app that helps plant owners and farmers identify and classify plant diseases and detect plants in real-time using state-of-the-art AI algorithms. This app is built on the popular CNN TensorFlow, OpenCV, and PySlowFast libraries that provide a robust and reliable platform for image and video analysis.
 
 # Key Features 
@@ -24,8 +24,7 @@
 
 # Installation
 >    ### To install Plant, you can download the app from the Google Play Store. The app is compatible with most Android devices and can be easily installed and configured.
-[Google][]
-![Alt text](/path/to/img.jpg)
+
    <div class="footer">
         &copy; 2023 Graduation pro
     </div>
