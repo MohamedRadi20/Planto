@@ -1,7 +1,7 @@
 # Planto - AI-AR App.  [![Up to Date](https://github.com/ikatyang/emoji-cheat-sheet/workflows/Up%20to%20Date/badge.svg)](https://github.com/ikatyang/emoji-cheat-sheet/actions?query=workflow%3A%22Up+to+Date%22)
    #### Planto is an android Java app that helps plant owners and farmers identify and classify plant diseases and detect plants in real-time using state-of-the-art AI algorithms. This app is built on the popular CNN TensorFlow, OpenCV, and PySlowFast libraries that provide a robust and reliable platform for image and video analysis.
 
-## Key Features
+## Key Features 
 1.   #### Plant Disease Classification: 
      The app uses a powerful CNN TensorFlow algorithm to identify and classify plant diseases by analyzing the leaves' images. To classify the plant diseases, you just have to take a picture of the leaf, and the app will provide the name and the symptoms of the disease. This feature is incredibly helpful for plant owners and farmers to take care of their plants and improve their productivity.
 
