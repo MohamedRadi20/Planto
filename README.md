@@ -24,7 +24,7 @@
 
 # Installation
 >    ### To install Plant, you can download the app from the Google Play Store. The app is compatible with most Android devices and can be easily installed and configured.
-<http://google.com/>
+<https://github.com/facebookresearch/SlowFast/>
    <div class="footer">
         &copy; 2023 Graduation pro
     </div>
