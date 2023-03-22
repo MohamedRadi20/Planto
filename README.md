@@ -33,7 +33,7 @@
 *    <https://developer.android.com//>
 *    <https://firebase.google.com//>
      
-   `&#8212;` This repo is still uder-dev `&mdash;`.
+   `&#8212;` ~~This repo is still uder-dev~~ `&mdash;`.
    <div class="footer">
         &copy; 2023 Graduation pro  :+1:
     </div>
