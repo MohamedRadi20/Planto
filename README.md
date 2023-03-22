@@ -25,7 +25,7 @@
 # Installation
 >    ### To install Plant, you can download the app from the Google Play Store. The app is compatible with most Android devices and can be easily installed and configured.
 
-# Related links  :+1:
+# Related links
 *    <https://www.tensorflow.org//>
 *    <https://opencv.org/android//>
 *    <https://github.com/facebookresearch/SlowFast/>
@@ -33,7 +33,7 @@
 *    <https://developer.android.com//>
 *    <https://firebase.google.com//>
      
-   `&#8212;` is the decimal-encoded equivalent of `&mdash;`.
+   `&#8212;` This repo is still uder-dev `&mdash;`.
    <div class="footer">
-        &copy; 2023 Graduation pro
+        &copy; 2023 Graduation pro  :+1:
     </div>
