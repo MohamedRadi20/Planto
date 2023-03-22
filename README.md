@@ -33,6 +33,7 @@
 *    <https://developer.android.com//>
 *    <https://firebase.google.com//>
      
+   `&#8212;` is the decimal-encoded equivalent of `&mdash;`.
    <div class="footer">
         &copy; 2023 Graduation pro
     </div>
