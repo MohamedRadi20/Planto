@@ -1,7 +1,7 @@
-# Planto - AI-AR App [![Up to Date](https://github.com/ikatyang/emoji-cheat-sheet/workflows/Up%20to%20Date/badge.svg)](https://github.com/ikatyang/emoji-cheat-sheet/actions?query=workflow%3A%22Up+to+Date%22)
+# Planto - AI-AR App  [![Up to Date](https://github.com/ikatyang/emoji-cheat-sheet/workflows/Up%20to%20Date/badge.svg)](https://github.com/ikatyang/emoji-cheat-sheet/actions?query=workflow%3A%22Up+to+Date%22)
    #### Planto is an android Java app that helps plant owners and farmers identify and classify plant diseases and detect plants in real-time using state-of-the-art AI algorithms. This app is built on the popular CNN TensorFlow, OpenCV, and PySlowFast libraries that provide a robust and reliable platform for image and video analysis.
 
-## Key Features 
+## Key Features :high_brightness:
 1.   #### Plant Disease Classification: 
      The app uses a powerful CNN TensorFlow algorithm to identify and classify plant diseases by analyzing the leaves' images. To classify the plant diseases, you just have to take a picture of the leaf, and the app will provide the name and the symptoms of the disease. This feature is incredibly helpful for plant owners and farmers to take care of their plants and improve their productivity.
 
@@ -14,7 +14,7 @@
 4.   #### 3D CNN Video Classification Algorithm:
      Planto uses advanced technology like PySlowFast by Facebook for 3DCNN video classification. This algorithm helps to classify videos that have weeds in them. This feature is essential for farmers as it helps them identify and remove weeds from their fields, leading to better crop yields.
 
-## Technologies Used
+## Technologies Used :secret:
 *    TensorFlow
 *    OpenCV
 *    PySlowFast
@@ -22,10 +22,10 @@
 *    APIs, including the OpenAI API for accessing new AI models developed by OpenAI.
 *    The Firebase Realtime Database, which is a cloud-hosted NoSQL database that lets you store and sync data between your users in realtime.
 
-## Installation
+## Installation  :u6307:
 #### To install Plant, you can download the app from the Google Play Store. The app is compatible with most Android devices and can be easily installed and configured.
 
-## Related links
+## Related links :koko:
 *    <https://www.tensorflow.org//>
 *    <https://opencv.org/android//>
 *    <https://github.com/facebookresearch/SlowFast/>
