@@ -18,7 +18,6 @@
 *    TensorFlow
 *    OpenCV
 *    PySlowFast
-     <https://github.com/facebookresearch/SlowFast/>
 *    Android Java
 *    APIs, including the OpenAI API for accessing new AI models developed by OpenAI.
 *    The Firebase Realtime Database, which is a cloud-hosted NoSQL database that lets you store and sync data between your users in realtime.
@@ -26,6 +25,9 @@
 # Installation
 >    ### To install Plant, you can download the app from the Google Play Store. The app is compatible with most Android devices and can be easily installed and configured.
 
+# Related links
+>    ### <https://github.com/facebookresearch/SlowFast/>
+     
    <div class="footer">
         &copy; 2023 Graduation pro
     </div>
