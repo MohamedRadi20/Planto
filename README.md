@@ -1,7 +1,7 @@
 # Planto
 >    ### This Android Java app is designed to help plant enthusiasts and farmers in detecting and classifying plant diseases, as well as identifying plants in real-time using object detection algorithm through the camera of their smartphones. This app provides an AR feature that is not available in any other app.
 
-# Features
+*# Features
 > 1.   ### Plant Disease Classification: 
 >    This app uses a convolutional neural network (CNN) model built with TensorFlow to classify plant diseases. Users can capture a photo of the plant and upload it to the app. The app will then analyze the image and provide the user with the disease classification.
 
