@@ -26,12 +26,12 @@
 >    ### To install Plant, you can download the app from the Google Play Store. The app is compatible with most Android devices and can be easily installed and configured.
 
 # Related links
-** <https://www.tensorflow.org//>
-** <https://opencv.org/android//>
-** <https://github.com/facebookresearch/SlowFast/>
-** <https://openai.com/blog/openai-api/>
-** <https://developer.android.com//>
-** <https://firebase.google.com//>
+*    <https://www.tensorflow.org//>
+*    <https://opencv.org/android//>
+*    <https://github.com/facebookresearch/SlowFast/>
+*    <https://openai.com/blog/openai-api/>
+*    <https://developer.android.com//>
+*    <https://firebase.google.com//>
      
    <div class="footer">
         &copy; 2023 Graduation pro
