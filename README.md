@@ -1,4 +1,4 @@
-# Planto     <div class="footer"> &copy; 2023 Graduation pro </div>
+# Planto
 >    ### This Android Java app is designed to help plant enthusiasts and farmers in detecting and classifying plant diseases, as well as identifying plants in real-time using object detection algorithm through the camera of their smartphones. This app provides an AR feature that is not available in any other app.
 
 # Features 
@@ -29,6 +29,7 @@
 
 > 5.   ### Firebase Realtime Database: 
 >    Firebase Realtime Database is a cloud-hosted NoSQL database used to store and retrieve data in real-time.
-<div class="footer">
-   &copy; 2004 Foo Corporation
-</div>
+<pre><code>&lt;div class="footer"&gt;
+    &amp;copy; 2004 Foo Corporation
+&lt;/div&gt;
+</code></pre>
