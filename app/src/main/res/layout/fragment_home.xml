@@ -101,5 +101,4 @@
         android:onClick="grating_compatibility_service"
         android:src="@drawable/service4" />
 
-
 </LinearLayout>

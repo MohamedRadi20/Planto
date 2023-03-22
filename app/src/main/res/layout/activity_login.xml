@@ -24,13 +24,13 @@
         android:layout_marginBottom="10dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp">
-        <com.google.android.material.textfield.TextInputEditText
+        <EditText
             android:id="@+id/email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:ems="10"
             android:hint="@string/enter_email"
-            android:fontFamily="@font/poppinsmedium">
-        </com.google.android.material.textfield.TextInputEditText>
+            android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
     <com.google.android.material.textfield.TextInputLayout
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -40,13 +40,13 @@
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
         app:passwordToggleEnabled="true">
-        <com.google.android.material.textfield.TextInputEditText
+        <EditText
             android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:ems="10"
             android:hint="@string/enter_password"
-            android:fontFamily="@font/poppinsmedium">
-        </com.google.android.material.textfield.TextInputEditText>
+            android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <CheckBox
@@ -85,6 +85,28 @@
         android:fontFamily="@font/poppinsmedium"
         android:textAllCaps="false"
         android:textSize="20sp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="33dp"
+        android:fontFamily="@font/poppinsmedium"
+        android:text=" Or continue with " />
+
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="33dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/bg_round"
+        android:fontFamily="@font/poppinsmedium"
+        android:text="Sign in with Google"
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        android:id="@+id/googleSignIn"
+        />
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

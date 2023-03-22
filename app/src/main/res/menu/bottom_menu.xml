@@ -17,4 +17,8 @@
         android:id="@+id/fourthFragment"
         android:title="Settings"
         android:icon="@drawable/ic_settings"/>
+    <item
+        android:id="@+id/fifthFragment"
+        android:title="Community"
+        android:icon="@drawable/groupusers"/>
 </menu>

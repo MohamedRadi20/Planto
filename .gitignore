@@ -13,3 +13,45 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Built application files
+*.apk
+*.ap_
+
+# Files for the ART/Dalvik VM
+*.dex
+
+# Java class files
+*.class
+
+# Built .aar and .jar files
+/libs/*.aar
+/libs/*.jar
+
+# Gradle build files and .gradle directories
+.gradle/
+build/
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Thumbnails
+*.iml
+.idea/
+*.iws
+*.ipr
+*.iws
+
+# Android Studio Navigation editor temp files
+.navigation/
+
+# External native build folder generated in Android Studio 2.2 and later
+.externalNativeBuild/
+
+# NDK debug files
+*.so.dSYM/
+
+# Proguard files
+proguard-project.txt
+proguard-rules.pro
+proguard-android.txt
