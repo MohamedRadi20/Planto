@@ -38,8 +38,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class Login_Activity extends AppCompatActivity {
-    FirebaseDatabase database;
-    DatabaseReference reference;
     FirebaseAuth mAuth;
     EditText email, password;
     String email_, password_;
@@ -61,8 +59,6 @@ public class Login_Activity extends AppCompatActivity {
         error = (TextView) findViewById(R.id.error);
         progressBar = (ProgressBar) findViewById(R.id.loading);
         sharedPreferences = getSharedPreferences("shared", MODE_PRIVATE);
-        database = FirebaseDatabase.getInstance();
-        reference = database.getReference("users");
         mAuth = FirebaseAuth.getInstance();
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
         gsc = GoogleSignIn.getClient(this, gso);
@@ -70,7 +66,7 @@ public class Login_Activity extends AppCompatActivity {
         Paint paint = tv.getPaint();
 
         Shader shader = paint.setShader(new LinearGradient(0, 0, tv.getPaint().measureText(tv.getText().toString()), tv.getTextSize(),
-                new int[]{Color.parseColor("#FF979797"), Color.parseColor("#1B6354")},
+                new int[]{Color.parseColor("#FF979797"), Color.parseColor("#4CAF50")},
                 new float[]{0, 1}, Shader.TileMode.CLAMP));
 
         if (sharedPreferences.getString("logged", "false").equals("true")) {

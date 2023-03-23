@@ -32,6 +32,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -56,9 +57,8 @@ public class AddPostActivity extends AppCompatActivity {
     private EditText mEditText;
     private Uri mImageUri;
     FirebaseStorage storage;
-    FirebaseDatabase database;
-    DatabaseReference reference;
     SharedPreferences sharedPreferences;
+    FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,8 +68,7 @@ public class AddPostActivity extends AppCompatActivity {
         imageView = findViewById(R.id.post_image_view);
         mEditText = findViewById(R.id.post_text_edit_text);
         storage = FirebaseStorage.getInstance();
-        database = FirebaseDatabase.getInstance();
-        reference = database.getReference("posts");
+        db = FirebaseFirestore.getInstance();
         Button addPostButton = findViewById(R.id.add_post_button);
         addPostButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,7 +85,7 @@ public class AddPostActivity extends AppCompatActivity {
         });
 
         Button gptButton = findViewById(R.id.gpt_button);
-        gptButton.setOnClickListener(new View.OnClickListener() {
+        /*gptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String text = mEditText.getText().toString().trim();
@@ -149,9 +148,9 @@ public class AddPostActivity extends AppCompatActivity {
                 };
                 queue.add(request);
             }
-        });
+        });*/
         Button dall_button = findViewById(R.id.dall_button);
-        dall_button.setOnClickListener(new View.OnClickListener() {
+        /*dall_button.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -202,7 +201,7 @@ public class AddPostActivity extends AppCompatActivity {
 
                 queue.add(jsonObjectRequest);
             }
-        });
+        });*/
 
     }
 
@@ -234,7 +233,7 @@ public class AddPostActivity extends AppCompatActivity {
             Toast.makeText(this, "Please select an image", Toast.LENGTH_SHORT).show();
             return;
         }*/
-        String newPostId = reference.push().getKey();
+        String newPostId =db.collection ("posts").document ().getId ();
         // Save the post to the database or send it to the server
         // Create a storage reference from our app
         StorageReference storageRef = storage.getReference().child("posts");
@@ -269,7 +268,7 @@ public class AddPostActivity extends AppCompatActivity {
                         List<String> comments = new ArrayList<>();
                         comments.add("comment1");
                         Post post = new Post(downloadUrl, mEditText.getText().toString(), sharedPreferences.getString("email", "anonymous"), 0, 0, comments);
-                        reference.child(newPostId).setValue(post).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        db.collection("posts").document(newPostId).set(post).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 Toast.makeText(getBaseContext(), "Post added", Toast.LENGTH_SHORT).show();

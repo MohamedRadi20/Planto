@@ -84,7 +84,7 @@ public class Profile_Fragment extends Fragment {
         super.onStart();
         profile_image = getActivity().findViewById(R.id.profile_image);
         name = getActivity().findViewById(R.id.name);
-        database = FirebaseDatabase.getInstance();
+       /* database = FirebaseDatabase.getInstance();
         reference = database.getReference("users").child("Mohamed Khaled");
         sharedPreferences = getActivity().getSharedPreferences("shared", MODE_PRIVATE);
         storage = FirebaseStorage.getInstance();
@@ -102,7 +102,7 @@ public class Profile_Fragment extends Fragment {
                 // Failed to read value
 
             }
-        });
+        });*/
         logout_profile = getActivity().findViewById(R.id.logout_profile);
         logout_profile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,7 +117,7 @@ public class Profile_Fragment extends Fragment {
         update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                uploadPhoto();
+                //uploadPhoto();
             }
         });
     }
@@ -132,7 +132,7 @@ public class Profile_Fragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == getActivity().RESULT_OK && data != null && data.getData() != null) {
+        /*if (requestCode == PICK_IMAGE_REQUEST && resultCode == getActivity().RESULT_OK && data != null && data.getData() != null) {
             mImageUri = data.getData();
             StorageReference storageRef = storage.getReference().child("profile");
             StorageReference imageRef = storageRef.child("Mohamed Khaled");
@@ -148,7 +148,7 @@ public class Profile_Fragment extends Fragment {
                     System.out.println("done");
                 }
             });
-        }
+        }*/
     }
     private String getRealPathFromURI(Uri uri) {
         String[] projection = {MediaStore.Images.Media.DATA};

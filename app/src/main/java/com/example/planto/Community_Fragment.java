@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,6 +22,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,9 +35,7 @@ import java.util.List;
 public class Community_Fragment extends Fragment {
     FloatingActionButton addPostButton;
     RecyclerView recyclerView;
-    RecyclerView.Adapter<MyViewHolder> adapter;
-    FirebaseDatabase database;
-    DatabaseReference postsRef;
+    FirebaseFirestore db;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -44,27 +48,19 @@ public class Community_Fragment extends Fragment {
         super.onStart();
         recyclerView = getActivity().findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
-
-        database = FirebaseDatabase.getInstance();
-        postsRef = database.getReference("posts");
-        postsRef.addValueEventListener(new ValueEventListener() {
+        db = FirebaseFirestore.getInstance();
+        db.collection("posts").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 List<Post> posts = new ArrayList<>();
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    Post post = postSnapshot.getValue(Post.class);
+                for (QueryDocumentSnapshot document : value) {
+                    Post post = document.toObject(Post.class);
                     posts.add(post);
                 }
                 MyAdapter adapter = new MyAdapter(posts);
                 recyclerView.setAdapter(adapter);
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Handle errors here
-            }
         });
-
         addPostButton = getActivity().findViewById(R.id.addPostButton);
         addPostButton.setOnClickListener(new View.OnClickListener() {
             @Override
