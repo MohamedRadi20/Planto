@@ -21,6 +21,8 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -30,33 +32,38 @@ import java.util.Map;
 import org.opencv.android.OpenCVLoader;
 
 public class MainActivity extends AppCompatActivity {
+    FirebaseAuth mAuth;
+
     static {
-        if(OpenCVLoader.initDebug()){
-            Log.d("bla","uhhh");
+        if (OpenCVLoader.initDebug()) {
+            Log.d("bla", "uhhh");
 
-        }else {
+        } else {
 
-            Log.d("bla","fuck");
+            Log.d("bla", "fuck");
         }
 
     }
 
-    public void plant_disease_service(View view){
+    public void plant_disease_service(View view) {
         Intent intent = new Intent(getApplicationContext(), Diagnose_Plant_Activity.class);
         startActivity(intent);
         finish();
     }
-    public void identify_plant_service(View view){
+
+    public void identify_plant_service(View view) {
         Intent intent = new Intent(getApplicationContext(), Identify_Plants_Activity.class);
         startActivity(intent);
         finish();
     }
-    public void separate_seeds_service(View view){
+
+    public void separate_seeds_service(View view) {
         Intent intent = new Intent(getApplicationContext(), Soil_Activity.class);
         startActivity(intent);
         finish();
     }
-    public void grating_compatibility_service(View view){
+
+    public void grating_compatibility_service(View view) {
         Intent intent = new Intent(getApplicationContext(), Weed_Activity.class);
         startActivity(intent);
         finish();
@@ -66,14 +73,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.option_menu,menu);
+        inflater.inflate(R.menu.option_menu, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(@Nullable MenuItem item){
+    public boolean onOptionsItemSelected(@Nullable MenuItem item) {
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.help:
 
             case R.id.feedback:
@@ -91,13 +98,23 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        BottomNavigationView bottomNavigationView =(BottomNavigationView)findViewById(R.id.bottomNavigationView);
-        NavController navController = Navigation.findNavController(this,  R.id.fragmentContainerView);
+        mAuth = FirebaseAuth.getInstance();
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavigationView);
+        NavController navController = Navigation.findNavController(this, R.id.fragmentContainerView);
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.firstFragment,R.id.secondFragment,R.id.thirdFragment,R.id.fourthFragment,R.id.fifthFragment).build();
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.firstFragment, R.id.secondFragment, R.id.thirdFragment, R.id.fourthFragment, R.id.fifthFragment).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
 
+    }
+
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user == null) {
+            Intent intent = new Intent(getApplicationContext(),Login_Activity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 }

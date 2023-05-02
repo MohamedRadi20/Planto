@@ -1,5 +1,6 @@
 package com.example.planto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Post {
@@ -8,13 +9,13 @@ public class Post {
     private String user;
     private int upvotes;
     private int downvotes;
-    private List<String> comments;
+    private ArrayList<String> comments;
 
     public Post() {
         // Default constructor required for calls to DataSnapshot.getValue(Post.class)
     }
 
-    public Post(String imageUrl, String text, String user, int upvotes, int downvotes, List<String> comments) {
+    public Post(String imageUrl, String text, String user, int upvotes, int downvotes, ArrayList<String> comments) {
         this.imageUrl = imageUrl;
         this.text = text;
         this.user = user;
@@ -63,11 +64,11 @@ public class Post {
         this.downvotes = downvotes;
     }
 
-    public List<String> getComments() {
+    public ArrayList<String> getComments() {
         return comments;
     }
 
-    public void setComments(List<String> comments) {
+    public void setComments(ArrayList<String> comments) {
         this.comments = comments;
     }
 }

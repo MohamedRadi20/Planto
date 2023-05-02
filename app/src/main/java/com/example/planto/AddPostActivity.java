@@ -30,6 +30,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -56,17 +58,17 @@ public class AddPostActivity extends AppCompatActivity {
     private ImageView imageView;
     private EditText mEditText;
     private Uri mImageUri;
+    FirebaseUser user;
     FirebaseStorage storage;
-    SharedPreferences sharedPreferences;
     FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_post);
-        sharedPreferences = getSharedPreferences("shared", MODE_PRIVATE);
         imageView = findViewById(R.id.post_image_view);
         mEditText = findViewById(R.id.post_text_edit_text);
+        user = FirebaseAuth.getInstance().getCurrentUser();
         storage = FirebaseStorage.getInstance();
         db = FirebaseFirestore.getInstance();
         Button addPostButton = findViewById(R.id.add_post_button);
@@ -76,7 +78,7 @@ public class AddPostActivity extends AppCompatActivity {
                 addPost();
             }
         });
-        Button uploadPhoto = findViewById(R.id.upload_photo);
+        Button uploadPhoto = (Button) findViewById(R.id.upload_photo);
         uploadPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -85,7 +87,7 @@ public class AddPostActivity extends AppCompatActivity {
         });
 
         Button gptButton = findViewById(R.id.gpt_button);
-        /*gptButton.setOnClickListener(new View.OnClickListener() {
+        gptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String text = mEditText.getText().toString().trim();
@@ -101,7 +103,7 @@ public class AddPostActivity extends AppCompatActivity {
                 // Set the request headers
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Content-Type", "application/json");
-                headers.put("Authorization", "Bearer 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");
+                headers.put("Authorization", "Bearer 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");
                 // Create the request body
                 Map<String, Object> body = new HashMap<>();
                 body.put("prompt", "create a post about " + mEditText.getText().toString() + " with maximum 300 characters");
@@ -148,9 +150,9 @@ public class AddPostActivity extends AppCompatActivity {
                 };
                 queue.add(request);
             }
-        });*/
+        });
         Button dall_button = findViewById(R.id.dall_button);
-        /*dall_button.setOnClickListener(new View.OnClickListener() {
+        dall_button.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -159,9 +161,9 @@ public class AddPostActivity extends AppCompatActivity {
 
                 JSONObject jsonBody = new JSONObject();
                 try {
-                    jsonBody.put("prompt",mEditText.getText().toString() );
+                    jsonBody.put("prompt", mEditText.getText().toString());
                     jsonBody.put("num_images", 1);
-                    jsonBody.put("size", "512x512");
+                    jsonBody.put("size", "256x256");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -177,7 +179,7 @@ public class AddPostActivity extends AppCompatActivity {
                                     choices = response.getJSONArray("data");
                                     JSONObject completions = choices.getJSONObject(0);
                                     String imageURL = completions.getString("url");
-                                    Picasso.get().load(imageURL).into( imageView);
+                                    Picasso.get().load(imageURL).into(imageView);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -194,30 +196,46 @@ public class AddPostActivity extends AppCompatActivity {
                     public Map<String, String> getHeaders() throws AuthFailureError {
                         Map<String, String> headers = new HashMap<String, String>();
                         headers.put("Content-Type", "application/json");
-                        headers.put("Authorization", "Bearer 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");
+                        headers.put("Authorization", "Bearer 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");
                         return headers;
                     }
                 };
 
+                // Set timeout duration
+                jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+                        10000, // Timeout in milliseconds
+                        DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+                ));
+
+                // Add the request to the RequestQueue
                 queue.add(jsonObjectRequest);
+
             }
-        });*/
+        });
 
     }
 
 
     private void openFileChooser() {
+        // Create an intent to open the gallery
         Intent iGallary = new Intent(Intent.ACTION_PICK);
+        // Set the data type for the intent to images
         iGallary.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        // Start the activity using this intent and return the result
         startActivityForResult(iGallary, PICK_IMAGE_REQUEST);
     }
 
     @Override
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        // Step 1: Check if the request code and result code are matching
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            // Step 2: Get the image uri from the data
             mImageUri = data.getData();
+            // Step 3: Display the image in the image view
             imageView.setImageURI(mImageUri);
         }
     }
@@ -233,7 +251,7 @@ public class AddPostActivity extends AppCompatActivity {
             Toast.makeText(this, "Please select an image", Toast.LENGTH_SHORT).show();
             return;
         }*/
-        String newPostId =db.collection ("posts").document ().getId ();
+        String newPostId = db.collection("posts").document().getId();
         // Save the post to the database or send it to the server
         // Create a storage reference from our app
         StorageReference storageRef = storage.getReference().child("posts");
@@ -265,9 +283,9 @@ public class AddPostActivity extends AppCompatActivity {
                     public void onSuccess(Uri uri) {
                         // Handle successful download URL retrieval
                         String downloadUrl = uri.toString();
-                        List<String> comments = new ArrayList<>();
+                        ArrayList<String> comments = new ArrayList<>();
                         comments.add("comment1");
-                        Post post = new Post(downloadUrl, mEditText.getText().toString(), sharedPreferences.getString("email", "anonymous"), 0, 0, comments);
+                        Post post = new Post(downloadUrl, mEditText.getText().toString(), user.getEmail(), 0, 0, comments);
                         db.collection("posts").document(newPostId).set(post).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {

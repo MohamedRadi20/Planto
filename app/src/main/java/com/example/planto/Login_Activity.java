@@ -28,9 +28,11 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -45,7 +47,6 @@ public class Login_Activity extends AppCompatActivity {
     Button submit, googleSignIn;
     TextView error, tv;
     ProgressBar progressBar;
-    SharedPreferences sharedPreferences;
     GoogleSignInOptions gso;
     GoogleSignInClient gsc;
 
@@ -58,23 +59,14 @@ public class Login_Activity extends AppCompatActivity {
         password = (EditText) findViewById(R.id.password);
         error = (TextView) findViewById(R.id.error);
         progressBar = (ProgressBar) findViewById(R.id.loading);
-        sharedPreferences = getSharedPreferences("shared", MODE_PRIVATE);
         mAuth = FirebaseAuth.getInstance();
-        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
-        gsc = GoogleSignIn.getClient(this, gso);
         tv = findViewById(R.id.tv);
         Paint paint = tv.getPaint();
 
-        Shader shader = paint.setShader(new LinearGradient(0, 0, tv.getPaint().measureText(tv.getText().toString()), tv.getTextSize(),
+        /*Shader shader = paint.setShader(new LinearGradient(0, 0, tv.getPaint().measureText(tv.getText().toString()), tv.getTextSize(),
                 new int[]{Color.parseColor("#FF979797"), Color.parseColor("#4CAF50")},
-                new float[]{0, 1}, Shader.TileMode.CLAMP));
+                new float[]{0, 1}, Shader.TileMode.CLAMP));*/
 
-        if (sharedPreferences.getString("logged", "false").equals("true")) {
-            Toast.makeText(getApplicationContext(), "Logged in successfully", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            finish();
-            startActivity(intent);
-        }
         registerNow = findViewById(R.id.registerNow);
         registerNow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,18 +103,15 @@ public class Login_Activity extends AppCompatActivity {
             }
         });
         googleSignIn = findViewById(R.id.googleSignIn);
+        createRequest();
         googleSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                signIn();
+                signInWithGoogle();
             }
         });
     }
 
-    void signIn() {
-        Intent signInIntent = gsc.getSignInIntent();
-        startActivityForResult(signInIntent, 1000);
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -130,22 +119,26 @@ public class Login_Activity extends AppCompatActivity {
         if (requestCode == 1000) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
+                GoogleSignInAccount account = task.getResult(ApiException.class);
                 task.getResult(ApiException.class);
-                navigateToSecondActivity();
+                firebaseAuthWithGoogle(account.getIdToken());
             } catch (Exception e) {
-                Toast.makeText(getApplicationContext(), "something wrong", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    void navigateToSecondActivity() {
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("email", account.getEmail());
-        editor.apply();
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        startActivity(intent);
-        finish();
+    void firebaseAuthWithGoogle(String idToken) {
+        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+        mAuth.signInWithCredential(credential).addOnCompleteListener(Login_Activity.this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                Toast.makeText(getApplicationContext(), "Logged in successfully", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
     public void loginUser() {
@@ -155,11 +148,8 @@ public class Login_Activity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            FirebaseUser user = mAuth.getCurrentUser();
+                            //FirebaseUser user = mAuth.getCurrentUser();
                             Toast.makeText(getApplicationContext(), "Logged in successfully", Toast.LENGTH_SHORT).show();
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putString("email", email_);
-                            editor.apply();
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             startActivity(intent);
                             finish();
@@ -170,5 +160,25 @@ public class Login_Activity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    public void createRequest() {
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
+        gsc = GoogleSignIn.getClient(this, gso);
+    }
+
+    public void signInWithGoogle() {
+        Intent signInIntent = gsc.getSignInIntent();
+        startActivityForResult(signInIntent, 1000);
+    }
+
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 }

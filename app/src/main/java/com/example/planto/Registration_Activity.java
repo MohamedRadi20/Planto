@@ -36,6 +36,8 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.PhoneAuthOptions;
+import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -45,6 +47,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class Registration_Activity extends AppCompatActivity {
     FirebaseFirestore db;
@@ -71,9 +74,9 @@ public class Registration_Activity extends AppCompatActivity {
         tv = findViewById(R.id.tv);
         Paint paint = tv.getPaint();
 
-        Shader shader = paint.setShader(new LinearGradient(0, 0, tv.getPaint().measureText(tv.getText().toString()), tv.getTextSize(),
+    /*    Shader shader = paint.setShader(new LinearGradient(0, 0, tv.getPaint().measureText(tv.getText().toString()), tv.getTextSize(),
                 new int[]{Color.parseColor("#FF979797"), Color.parseColor("#4CAF50")},
-                new float[]{0, 1}, Shader.TileMode.CLAMP));
+                new float[]{0, 1}, Shader.TileMode.CLAMP));*/
 
         submit = (Button) findViewById(R.id.submit);
         submit.setOnClickListener(new View.OnClickListener() {
@@ -120,9 +123,8 @@ public class Registration_Activity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            //FirebaseUser user = mAuth.getCurrentUser();
-                            Users user = new Users(name_, email_, password_);
-                            db.collection("users").document(email_).set(user);
+                            FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                            firebaseUser.sendEmailVerification();
                             Toast.makeText(getApplicationContext(), "user created",
                                     Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), Login_Activity.class);

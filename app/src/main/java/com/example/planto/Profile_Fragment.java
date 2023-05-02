@@ -30,10 +30,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -57,15 +61,13 @@ import java.util.Map;
  */
 public class Profile_Fragment extends Fragment {
     private static final int PICK_IMAGE_REQUEST = 1;
-    private Uri mImageUri;
-    FirebaseDatabase database;
-    DatabaseReference reference;
-    SharedPreferences sharedPreferences;
-    FirebaseStorage storage;
+    FirebaseAuth mAuth;
+    FirebaseUser user;
     TextView name;
     ImageView profile_image;
-    LinearLayout logout_profile;
+    LinearLayout logout_profile, resetPassword;
     Button update;
+    GoogleSignInAccount account;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -83,30 +85,19 @@ public class Profile_Fragment extends Fragment {
     public void onStart() {
         super.onStart();
         profile_image = getActivity().findViewById(R.id.profile_image);
-        name = getActivity().findViewById(R.id.name);
-       /* database = FirebaseDatabase.getInstance();
-        reference = database.getReference("users").child("Mohamed Khaled");
-        sharedPreferences = getActivity().getSharedPreferences("shared", MODE_PRIVATE);
-        storage = FirebaseStorage.getInstance();
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method will be called once with the value from the database.
-                Users user = dataSnapshot.getValue(Users.class);
-                Picasso.get().load(user.getProfileImageUrl()).into(profile_image);
-                name.setText(user.getName());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-
-            }
-        });*/
+        name = getActivity().findViewById(R.id.userName);
+        account = GoogleSignIn.getLastSignedInAccount(getActivity());
+        mAuth = FirebaseAuth.getInstance();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            name.setText(user.getDisplayName());
+            Picasso.get().load(user.getPhotoUrl()).into(profile_image);
+        }
         logout_profile = getActivity().findViewById(R.id.logout_profile);
         logout_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(getActivity().getApplicationContext(), Login_Activity.class);
                 startActivity(intent);
                 getActivity().finish();
@@ -118,6 +109,38 @@ public class Profile_Fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 //uploadPhoto();
+             /*   String country = "India";
+                String season = "Summer";
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference myRef = database.getReference("Users").child(country).child(season);
+                Users users = new Users(user.getDisplayName(), user.getEmail(), user.getPhotoUrl().toString());
+                myRef.child("jjjjjjjjjjjjj").setValue(users);
+                DatabaseReference myRef1 = database.getReference("Users").child(country).child(season);
+                myRef1.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        Users users1 = snapshot.getValue(Users.class);
+                        System.out.println(users1.getName());
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });*/
+
+            }
+        });
+        resetPassword = getActivity().findViewById(R.id.resetPassword);
+        resetPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAuth.sendPasswordResetEmail(user.getEmail()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Toast.makeText(getActivity().getApplicationContext(), "Reset password email sent", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
     }
@@ -132,24 +155,8 @@ public class Profile_Fragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        /*if (requestCode == PICK_IMAGE_REQUEST && resultCode == getActivity().RESULT_OK && data != null && data.getData() != null) {
-            mImageUri = data.getData();
-            StorageReference storageRef = storage.getReference().child("profile");
-            StorageReference imageRef = storageRef.child("Mohamed Khaled");
-            String filePath = getRealPathFromURI(mImageUri);
-            File file = new File(filePath);
-            if (!file.exists()) {
-                Toast.makeText(getActivity().getApplicationContext(), "file not found", Toast.LENGTH_LONG).show();
-                return;
-            }
-            imageRef.putFile(Uri.fromFile(file)).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    System.out.println("done");
-                }
-            });
-        }*/
     }
+
     private String getRealPathFromURI(Uri uri) {
         String[] projection = {MediaStore.Images.Media.DATA};
         Cursor cursor = getActivity().getContentResolver().query(uri, projection, null, null, null);
