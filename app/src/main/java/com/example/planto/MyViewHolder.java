@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class MyViewHolder extends RecyclerView.ViewHolder {
     public ImageView imageView,like,dislike,item_profile_image;
-    public TextView textView,likeCount,dislikeCount,item_username;
+    public TextView textView,likeCount,dislikeCount,item_username,comments_count;
 
     public MyViewHolder(View itemView) {
         super(itemView);
@@ -20,5 +20,6 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
         dislikeCount = itemView.findViewById(R.id.dislike_count);
         item_profile_image = itemView.findViewById(R.id.item_profile_image);
         item_username = itemView.findViewById(R.id.item_username);
+        comments_count = itemView.findViewById(R.id.comments_count);
     }
 }
