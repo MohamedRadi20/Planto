@@ -27,17 +27,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 public class Login_Activity extends AppCompatActivity {
     FirebaseAuth mAuth;
@@ -63,9 +57,9 @@ public class Login_Activity extends AppCompatActivity {
         tv = findViewById(R.id.tv);
         Paint paint = tv.getPaint();
 
-        /*Shader shader = paint.setShader(new LinearGradient(0, 0, tv.getPaint().measureText(tv.getText().toString()), tv.getTextSize(),
+        Shader shader = paint.setShader(new LinearGradient(0, 0, tv.getPaint().measureText(tv.getText().toString()), tv.getTextSize(),
                 new int[]{Color.parseColor("#FF979797"), Color.parseColor("#4CAF50")},
-                new float[]{0, 1}, Shader.TileMode.CLAMP));*/
+                new float[]{0, 1}, Shader.TileMode.CLAMP));
 
         registerNow = findViewById(R.id.registerNow);
         registerNow.setOnClickListener(new View.OnClickListener() {
@@ -174,11 +168,21 @@ public class Login_Activity extends AppCompatActivity {
 
     protected void onStart() {
         super.onStart();
+        if (!restorePrefData()) {
+            Intent mainActivity = new Intent(getApplicationContext(), Intro_Activity.class );
+            startActivity(mainActivity);
+            finish();
+        }
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
             finish();
         }
+    }
+    private boolean restorePrefData() {
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("myPrefs",MODE_PRIVATE);
+        Boolean isIntroActivityOpnendBefore = pref.getBoolean("isIntroOpnend",false);
+        return  isIntroActivityOpnendBefore;
     }
 }

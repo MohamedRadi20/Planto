@@ -12,8 +12,10 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,6 +25,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,9 +34,20 @@ import com.example.planto.ml.Model;
 import org.tensorflow.lite.DataType;
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import pl.droidsonroids.gif.GifImageView;
 
@@ -42,9 +56,9 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
     ImageView imageView_dummy , imageView_arrow;
     GifImageView imageView_button;
     Animation animation_left , animation_right, fade_in;
-    Button upload_button;
+    Button upload_button , search_button;
     TextView textView1 , textView2;
-    int imageSize = 64;
+    int imageSize = 128;
     String First_Result = "" , s , Second_Result = "" ;
 
     @SuppressLint("MissingInflatedId")
@@ -53,11 +67,12 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_diagnose_plant);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         imageView_dummy = findViewById(R.id.cameraReasult);
         imageView_button = findViewById(R.id.openCamera);
         imageView_arrow = findViewById(R.id.arrow);
         upload_button = findViewById(R.id.upload);
+        search_button = findViewById(R.id.search);
+
 
         if (ContextCompat.checkSelfPermission(Diagnose_Plant_Activity.this,
                 Manifest.permission.READ_CONTACTS)
@@ -82,6 +97,15 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
                 startActivityForResult(iGallary , GALLERY_RQ_CODE);
             }
         });
+
+        search_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), Search_Activity.class);
+                startActivity(intent);
+            }
+        });
+
         textView1 = findViewById(R.id.cool_tv1);
         textView2 = findViewById(R.id.cool_tv2);
         upload_button = findViewById(R.id.upload);
@@ -96,6 +120,7 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
         imageView_arrow.setAnimation(fade_in);
         imageView_button.setAnimation(fade_in);
         upload_button.setAnimation(fade_in);
+
     }
 
     public void classifyImage(Bitmap image){
@@ -103,7 +128,7 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
             Model model = Model.newInstance(getApplicationContext());
 
             // Creates inputs for reference.
-            TensorBuffer inputFeature0 = TensorBuffer.createFixedSize(new int[]{1, 64, 64, 3}, DataType.FLOAT32);
+            TensorBuffer inputFeature0 = TensorBuffer.createFixedSize(new int[]{1, 128, 128, 3}, DataType.FLOAT32);
             ByteBuffer byteBuffer = ByteBuffer.allocateDirect(4 * imageSize * imageSize * 3);
             byteBuffer.order(ByteOrder.nativeOrder());
 
@@ -149,6 +174,7 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
                     "Apple___Black_rot",
                     "Apple___Cedar_apple_rust",
                     "Apple___healthy",
+                    "Background_without_leaves",
                     "Blueberry___healthy",
                     "Cherry_(including_sour)___Powdery_mildew",
                     "Cherry_(including_sour)___healthy",
@@ -182,17 +208,18 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
                     "Tomato___Target_Spot",
                     "Tomato___Tomato_Yellow_Leaf_Curl_Virus",
                     "Tomato___Tomato_mosaic_virus",
-                    "Tomato___healthy"};
+                    "Tomato___healthy"
+            };
 
             First_Result = classes[maxPos];
             Second_Result = classes[secondMaxPos];
 
-            s += String.format("%s:      %.1f%%\n", First_Result, maxConfidence * 100);
-            s += String.format("%s:      %.1f%%\n", Second_Result, secondMaxConfidence * 100);
+            s += String.format("%s:      %.1f%%\n",First_Result, maxConfidence * 100);
+            s += String.format("%s:      %.1f%%\n",Second_Result, secondMaxConfidence * 100);
 
             if(First_Result != ""){
                 textView2.setTextSize(12);
-                textView2.setTextColor(ContextCompat.getColor(textView2.getContext(), R.color.teal_700));
+                textView2.setTextColor(ContextCompat.getColor(textView2.getContext(), R.color.purple_700));
                 textView2.setText(s);
             }
 //            for(int i = 0; i < classes.length; i++){

@@ -2,38 +2,36 @@ package com.example.planto;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
-
 import pl.droidsonroids.gif.GifImageView;
 
-public class Identify_Plants_Activity extends AppCompatActivity {
+public class Identify_Plants_Activity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
     ImageView imageView_dummy , imageView_arrow;
     GifImageView imageView_button;
     Animation animation_left , animation_right, fade_in;
     TextView textView1 , textView2;
     Button upload_button ;
+    SharedPreferences pref;
+    Spinner spinner;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -41,6 +39,16 @@ public class Identify_Plants_Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_identify_plants);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        spinner = findViewById(R.id.action_bar_spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.model_spinner, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(this);
+
+        pref = getApplicationContext().getSharedPreferences("models",MODE_PRIVATE);
+
         imageView_dummy = findViewById(R.id.cameraReasult);
         imageView_arrow = findViewById(R.id.arrow);
 
@@ -48,7 +56,7 @@ public class Identify_Plants_Activity extends AppCompatActivity {
         imageView_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(),CameraActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                startActivity(new Intent(getApplicationContext(), Camera_Activity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP));
             }
         });
 
@@ -66,6 +74,26 @@ public class Identify_Plants_Activity extends AppCompatActivity {
         imageView_arrow.setAnimation(fade_in);
         imageView_button.setAnimation(fade_in);
         upload_button.setAnimation(fade_in);
+    }
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String text = parent.getItemAtPosition(position).toString();
+        if(text.equals("Fruits")){
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putBoolean("isFruits",true);
+            editor.commit();
+            Toast.makeText(parent.getContext(), text, Toast.LENGTH_SHORT).show();
+        }else{
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putBoolean("isFruits",false);
+            editor.commit();
+            Toast.makeText(parent.getContext(), text + " fuck", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 
     protected void onActivityResult(int requestCode , int resultCode, @Nullable Intent data){

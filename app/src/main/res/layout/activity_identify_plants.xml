@@ -56,6 +56,7 @@
                 android:background="#fff"
                 android:src="@drawable/arrow" />
 
+
             <pl.droidsonroids.gif.GifImageView
                 android:id="@+id/ar_camera_button"
                 android:layout_width="143dp"
@@ -64,6 +65,13 @@
                 android:layout_marginTop="66dp"
                 android:layout_marginBottom="40dp"
                 android:src="@drawable/camera_anim" />
+            <Spinner
+                android:id="@+id/action_bar_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="3dp"
+                />
 
         </LinearLayout>
 

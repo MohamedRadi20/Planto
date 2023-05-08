@@ -74,9 +74,9 @@ public class Registration_Activity extends AppCompatActivity {
         tv = findViewById(R.id.tv);
         Paint paint = tv.getPaint();
 
-    /*    Shader shader = paint.setShader(new LinearGradient(0, 0, tv.getPaint().measureText(tv.getText().toString()), tv.getTextSize(),
+        Shader shader = paint.setShader(new LinearGradient(0, 0, tv.getPaint().measureText(tv.getText().toString()), tv.getTextSize(),
                 new int[]{Color.parseColor("#FF979797"), Color.parseColor("#4CAF50")},
-                new float[]{0, 1}, Shader.TileMode.CLAMP));*/
+                new float[]{0, 1}, Shader.TileMode.CLAMP));
 
         submit = (Button) findViewById(R.id.submit);
         submit.setOnClickListener(new View.OnClickListener() {

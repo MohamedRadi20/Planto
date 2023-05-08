@@ -1,19 +1,13 @@
 package com.example.planto;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,11 +18,16 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import java.io.IOException;
 
 public class Weed_Activity extends AppCompatActivity {
     private static final int REQUEST_VIDEO_CAPTURE = 1;
@@ -86,6 +85,18 @@ public class Weed_Activity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_VIDEO_CAPTURE && resultCode == RESULT_OK) {
             Uri videoUri = data.getData();
+            Log.e("bla","fuck1");
+            Video_Classifier classifier = null;
+            try {
+                classifier = new Video_Classifier(this);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Log.e("bla","fuck2");
+            String label = classifier.classifyVideo(videoUri);
+            Log.e("bla","fuck3");
+            classifier.renderResults(label, textView2);
+
             videoView.setVideoPath(String.valueOf(videoUri));
             videoView.start();
         }
