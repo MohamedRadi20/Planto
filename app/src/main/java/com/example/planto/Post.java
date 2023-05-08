@@ -7,6 +7,7 @@ public class Post {
     private String imageUrl;
     private String text;
     private String user;
+    private String id;
     private int upvotes;
     private int downvotes;
     private ArrayList<String> comments;
@@ -38,6 +39,14 @@ public class Post {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getUser() {

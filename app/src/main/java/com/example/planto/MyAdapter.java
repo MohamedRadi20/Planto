@@ -38,6 +38,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         Picasso.get().load(post.getImageUrl()).into( holder.imageView);
         Picasso.get().load(user.getPhotoUrl()).into( holder.item_profile_image);
         holder.item_username.setText(user.getDisplayName());
+        holder.comments_count.setText(String.valueOf(post.getComments().size()));
         holder.textView.setText(post.getText());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,6 +51,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
                 bundle.putInt("postUpvotes", post.getUpvotes());
                 bundle.putInt("postDownvotes", post.getDownvotes());
                 bundle.putStringArrayList("postComments", post.getComments());
+                bundle.putString("postID", post.getId());
                 Intent intent = new Intent(v.getContext(), postPage.class);
                 intent.putExtras(bundle);
                 v.getContext().startActivity(intent);

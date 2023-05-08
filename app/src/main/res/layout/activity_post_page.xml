@@ -101,24 +101,36 @@
     <ListView
         android:id="@+id/comments_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="300dp">
 
     </ListView>
 
-    <EditText
-        android:id="@+id/comment_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
-        android:layout_weight="1"
-        android:hint="Add a comment"
-        android:inputType="text"
-
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+        android:orientation="horizontal"
         >
+      <EditText
+          android:id="@+id/comment_text"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_vertical"
+          android:layout_marginLeft="10dp"
+          android:layout_marginTop="10dp"
+          android:layout_marginRight="10dp"
+          android:layout_marginBottom="10dp"
+          android:layout_weight="1"
+          android:hint="Add a comment"
+          android:inputType="text"
 
-    </EditText>
+          >
+      </EditText>
+      <ImageView
+          android:id="@+id/add_comment_button"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_vertical"
+          android:layout_marginRight="30dp"
+          android:src="@drawable/add_comment" />
+  </LinearLayout>
 </LinearLayout>
