@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Diagnose_Plant_Result_Activity">
+
+    <ImageView
+        android:id="@+id/cameraReasult"
+        android:layout_width="match_parent"
+        android:layout_height="358dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="3dp"
+        android:src="@drawable/logo" />
+
+    <TextView
+        android:id="@+id/textView_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="3dp"
+        android:fontFamily="@font/poppinsbold"
+        android:layout_gravity="center"
+        android:text="Plant Disease Diagnosis..."
+        android:textColor="@color/purple_700"
+        android:textSize="26sp"
+        android:textStyle="bold"/>
+
+    <ScrollView
+        android:id="@+id/scrollViewfuck"
+        android:layout_width="match_parent"
+        android:layout_height="181dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:fillViewport="false">
+
+        <TextView
+            android:id="@+id/textView_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppinsbold"
+            android:justificationMode="inter_word"
+            android:text="Plant Disease Diagnosis..."
+            android:textColor="@color/black"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+    </ScrollView>
+
+    <Button
+        android:id="@+id/search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="3dp"
+        android:text="More"
+        android:textAllCaps="false"/>
+
+</LinearLayout>

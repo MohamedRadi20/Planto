@@ -1,10 +1,5 @@
 package com.example.planto;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -12,10 +7,9 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
-import android.text.Html;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,43 +17,37 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.planto.ml.Model;
 
 import org.tensorflow.lite.DataType;
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
-import pl.droidsonroids.gif.GifImageView;
 
 public class Diagnose_Plant_Activity extends AppCompatActivity {
     private final int GALLERY_RQ_CODE = 1000;
-    ImageView imageView_dummy , imageView_arrow;
-    GifImageView imageView_button;
+    private Handler handlerAnimation = new Handler();
+    private ImageView imgAnimation1;
+    private ImageView imgAnimation2;
+    private Button button;
     Animation animation_left , animation_right, fade_in;
-    Button upload_button , search_button;
-    TextView textView1 , textView2;
-    int imageSize = 128;
-    String First_Result = "" , s , Second_Result = "" ;
+    Button upload_button ;
+    TextView diagnose_plant_activity_title_textView , diagnose_plant_activity_entry_textView;
+    int image_size_for_the_model = 128;
+    String First_Result = "", Second_Result = "" ;
+    float maxConfidence = 0 , secondMaxConfidence = 0 ;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -67,11 +55,7 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_diagnose_plant);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        imageView_dummy = findViewById(R.id.cameraReasult);
-        imageView_button = findViewById(R.id.openCamera);
-        imageView_arrow = findViewById(R.id.arrow);
         upload_button = findViewById(R.id.upload);
-        search_button = findViewById(R.id.search);
 
 
         if (ContextCompat.checkSelfPermission(Diagnose_Plant_Activity.this,
@@ -81,14 +65,7 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
                     new String[]{Manifest.permission.CAMERA},
                     100);
         }
-        imageView_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(intent,3);
 
-            }
-        });
         upload_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -98,46 +75,81 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
             }
         });
 
-        search_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), Search_Activity.class);
-                startActivity(intent);
-            }
-        });
-
-        textView1 = findViewById(R.id.cool_tv1);
-        textView2 = findViewById(R.id.cool_tv2);
+        diagnose_plant_activity_title_textView = findViewById(R.id.diagnose_plant_activity_title_textView);
+        diagnose_plant_activity_entry_textView = findViewById(R.id.diagnose_plant_activity_entry_textView);
         upload_button = findViewById(R.id.upload);
 
         animation_left = AnimationUtils.loadAnimation(this,R.anim.left);
         animation_right = AnimationUtils.loadAnimation(this,R.anim.right);
         fade_in = AnimationUtils.loadAnimation(this,R.anim.fade_in);
 
-        textView1.setAnimation(animation_left);
-        textView2.setAnimation(animation_left);
-        imageView_dummy.setAnimation(animation_right);
-        imageView_arrow.setAnimation(fade_in);
-        imageView_button.setAnimation(fade_in);
+        diagnose_plant_activity_title_textView.setAnimation(animation_left);
+        diagnose_plant_activity_entry_textView.setAnimation(animation_left);
         upload_button.setAnimation(fade_in);
 
+
+        imgAnimation1 = findViewById(R.id.imgAnimation1);
+        imgAnimation2 = findViewById(R.id.imgAnimation2);
+        button = findViewById(R.id.button);
+
+        startPulse();
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(intent,3);
+            }
+        });
+
     }
+
+    private void startPulse() {
+        runnable.run();
+    }
+
+    // TODO circle.xml   round_button_blue.xml   color/round_button_clicked.xml
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            imgAnimation1.animate().scaleX(4f).scaleY(4f).alpha(0f).setDuration(1000)
+                    .withEndAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            imgAnimation1.setScaleX(1f);
+                            imgAnimation1.setScaleY(1f);
+                            imgAnimation1.setAlpha(1f);
+                        }
+                    });
+
+            imgAnimation2.animate().scaleX(4f).scaleY(4f).alpha(0f).setDuration(700)
+                    .withEndAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            imgAnimation2.setScaleX(1f);
+                            imgAnimation2.setScaleY(1f);
+                            imgAnimation2.setAlpha(1f);
+                        }
+                    });
+
+            handlerAnimation.postDelayed(this, 1500);
+        }
+    };
 
     public void classifyImage(Bitmap image){
         try {
             Model model = Model.newInstance(getApplicationContext());
 
-            // Creates inputs for reference.
             TensorBuffer inputFeature0 = TensorBuffer.createFixedSize(new int[]{1, 128, 128, 3}, DataType.FLOAT32);
-            ByteBuffer byteBuffer = ByteBuffer.allocateDirect(4 * imageSize * imageSize * 3);
+            ByteBuffer byteBuffer = ByteBuffer.allocateDirect(4 * image_size_for_the_model * image_size_for_the_model * 3);
             byteBuffer.order(ByteOrder.nativeOrder());
 
-            int[] intValues = new int[imageSize * imageSize];
+            int[] intValues = new int[image_size_for_the_model * image_size_for_the_model];
             image.getPixels(intValues, 0, image.getWidth(), 0, 0, image.getWidth(), image.getHeight());
             int pixel = 0;
-            //iterate over each pixel and extract R, G, and B values. Add those values individually to the byte buffer.
-            for(int i = 0; i < imageSize; i ++){
-                for(int j = 0; j < imageSize; j++){
+
+            for(int i = 0; i < image_size_for_the_model; i ++){
+                for(int j = 0; j < image_size_for_the_model; j++){
                     int val = intValues[pixel++]; // RGB
                     byteBuffer.putFloat(((val >> 16) & 0xFF) * (1.f / 1));
                     byteBuffer.putFloat(((val >> 8) & 0xFF) * (1.f / 1));
@@ -152,9 +164,7 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
             TensorBuffer outputFeature0 = outputs.getOutputFeature0AsTensorBuffer();
 
             float[] confidences = outputFeature0.getFloatArray();
-            // find the index of the class with the biggest confidence.
             int maxPos = 0 , secondMaxPos = 0 ;
-            float maxConfidence = 0 , secondMaxConfidence = 0 ;
 
             for (int i = 0; i < confidences.length; i++) {
                 if (confidences[i] > maxConfidence) {
@@ -162,6 +172,7 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
                     maxPos = i;
                 }
             }
+
             for (int i = 0; i < confidences.length; i++) {
                 if ((confidences[i] > secondMaxConfidence)&(confidences[i] != maxConfidence)) {
                     secondMaxConfidence = confidences[i] ;
@@ -169,63 +180,10 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
                 }
             }
 
-            String[] classes = {
-                    "Apple___Apple_scab",
-                    "Apple___Black_rot",
-                    "Apple___Cedar_apple_rust",
-                    "Apple___healthy",
-                    "Background_without_leaves",
-                    "Blueberry___healthy",
-                    "Cherry_(including_sour)___Powdery_mildew",
-                    "Cherry_(including_sour)___healthy",
-                    "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
-                    "Corn_(maize)___Common_rust_",
-                    "Corn_(maize)___Northern_Leaf_Blight",
-                    "Corn_(maize)___healthy",
-                    "Grape___Black_rot",
-                    "Grape___Esca_(Black_Measles)",
-                    "Grape___Leaf_blight_(Isariopsis_Leaf_Spot)",
-                    "Grape___healthy",
-                    "Orange___Haunglongbing_(Citrus_greening)",
-                    "Peach___Bacterial_spot",
-                    "Peach___healthy",
-                    "Pepper,_bell___Bacterial_spot",
-                    "Pepper,_bell___healthy",
-                    "Potato___Early_blight",
-                    "Potato___Late_blight",
-                    "Potato___healthy",
-                    "Raspberry___healthy",
-                    "Soybean___healthy",
-                    "Squash___Powdery_mildew",
-                    "Strawberry___Leaf_scorch",
-                    "Strawberry___healthy",
-                    "Tomato___Bacterial_spot",
-                    "Tomato___Early_blight",
-                    "Tomato___Late_blight",
-                    "Tomato___Leaf_Mold",
-                    "Tomato___Septoria_leaf_spot",
-                    "Tomato___Spider_mites Two-spotted_spider_mite",
-                    "Tomato___Target_Spot",
-                    "Tomato___Tomato_Yellow_Leaf_Curl_Virus",
-                    "Tomato___Tomato_mosaic_virus",
-                    "Tomato___healthy"
-            };
-
+            String[] classes = getResources().getStringArray(R.array.plant_disease_classes);
             First_Result = classes[maxPos];
             Second_Result = classes[secondMaxPos];
 
-            s += String.format("%s:      %.1f%%\n",First_Result, maxConfidence * 100);
-            s += String.format("%s:      %.1f%%\n",Second_Result, secondMaxConfidence * 100);
-
-            if(First_Result != ""){
-                textView2.setTextSize(12);
-                textView2.setTextColor(ContextCompat.getColor(textView2.getContext(), R.color.purple_700));
-                textView2.setText(s);
-            }
-//            for(int i = 0; i < classes.length; i++){
-//                s += String.format("%s: %.1f%%\n", classes[i], confidences[i] * 100);
-//            }
-            s = "";
             // Releases model resources if no longer used.
             model.close();
         } catch (IOException e) {
@@ -240,10 +198,22 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
                 Bitmap image = (Bitmap) data.getExtras().get("data");
                 int dimension = Math.min(image.getWidth(), image.getHeight());
                 image = ThumbnailUtils.extractThumbnail(image, dimension, dimension);
-                imageView_dummy.setImageBitmap(image);
 
-                image = Bitmap.createScaledBitmap(image, imageSize, imageSize, false);
+                image = Bitmap.createScaledBitmap(image, image_size_for_the_model, image_size_for_the_model, false);
                 classifyImage(image);
+
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                image.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byte[] byteArray = stream.toByteArray();
+
+                Intent intent = new Intent(getApplicationContext(), Diagnose_Plant_Result_Activity.class);
+                intent.putExtra("Diagnose_First_Resut",First_Result);
+                intent.putExtra("Diagnose_Second_Resut",Second_Result);
+                intent.putExtra("maxConfidence",maxConfidence);
+                intent.putExtra("secondMaxConfidence",secondMaxConfidence);
+                intent.putExtra("image", byteArray);
+                startActivity(intent);
+
             }else{
                 Uri dat = data.getData();
                 Bitmap image = null;
@@ -252,10 +222,21 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                imageView_dummy.setImageBitmap(image);
-
-                image = Bitmap.createScaledBitmap(image, imageSize, imageSize, false);
+                image = Bitmap.createScaledBitmap(image, image_size_for_the_model, image_size_for_the_model, false);
                 classifyImage(image);
+
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                image.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byte[] byteArray = stream.toByteArray();
+
+                Intent intent = new Intent(getApplicationContext(), Diagnose_Plant_Result_Activity.class);
+                intent.putExtra("Diagnose_First_Resut",First_Result);
+                intent.putExtra("Diagnose_Second_Resut",Second_Result);
+                intent.putExtra("maxConfidence",maxConfidence);
+                intent.putExtra("secondMaxConfidence",secondMaxConfidence);
+                intent.putExtra("image", byteArray);
+                startActivity(intent);
+
             }
         }
         super.onActivityResult(requestCode, resultCode, data);

@@ -29,8 +29,16 @@
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.Planto"
+        android:screenOrientation="portrait"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name=".Diagnose_Plant_Result_Activity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
         <activity
             android:name=".Search_Activity"
             android:exported="false">
