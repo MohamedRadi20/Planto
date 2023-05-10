@@ -125,6 +125,7 @@ public class Registration_Activity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser firebaseUser = mAuth.getCurrentUser();
                             firebaseUser.sendEmailVerification();
+                            createFirestoreUser(firebaseUser.getUid());
                             Toast.makeText(getApplicationContext(), "user created",
                                     Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), Login_Activity.class);
@@ -140,6 +141,11 @@ public class Registration_Activity extends AppCompatActivity {
                     }
                 });
 
+    }
+
+    void createFirestoreUser(String id) {
+        User user = new User(name_, email_);
+        db.collection("users").document(id).set(user);
     }
 
 }

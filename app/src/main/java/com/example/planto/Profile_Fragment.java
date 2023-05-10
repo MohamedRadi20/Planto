@@ -43,6 +43,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -62,11 +63,12 @@ import java.util.Map;
 public class Profile_Fragment extends Fragment {
     private static final int PICK_IMAGE_REQUEST = 1;
     FirebaseAuth mAuth;
-    FirebaseUser user;
+    User user;
+    FirebaseFirestore db;
+    FirebaseUser firebaseUser;
     TextView name;
     ImageView profile_image;
-    LinearLayout logout_profile, resetPassword;
-    Button update;
+    LinearLayout logout_profile, resetPassword, update_profile;
     GoogleSignInAccount account;
 
     @Override
@@ -88,11 +90,18 @@ public class Profile_Fragment extends Fragment {
         name = getActivity().findViewById(R.id.userName);
         account = GoogleSignIn.getLastSignedInAccount(getActivity());
         mAuth = FirebaseAuth.getInstance();
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            name.setText(user.getDisplayName());
-            Picasso.get().load(user.getPhotoUrl()).into(profile_image);
-        }
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        db = FirebaseFirestore.getInstance();
+        db.collection("users").document(firebaseUser.getUid()).get().addOnSuccessListener(new OnSuccessListener<com.google.firebase.firestore.DocumentSnapshot>() {
+            @Override
+            public void onSuccess(com.google.firebase.firestore.DocumentSnapshot documentSnapshot) {
+                user = documentSnapshot.toObject(User.class);
+                if (user != null) {
+                    name.setText(user.getUsername());
+                    Picasso.get().load(user.getAvatar_url()).into(profile_image);
+                }
+            }
+        });
         logout_profile = getActivity().findViewById(R.id.logout_profile);
         logout_profile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,31 +113,12 @@ public class Profile_Fragment extends Fragment {
 
             }
         });
-        update = getActivity().findViewById(R.id.update);
-        update.setOnClickListener(new View.OnClickListener() {
+        update_profile = getActivity().findViewById(R.id.update_profile);
+        update_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //uploadPhoto();
-             /*   String country = "India";
-                String season = "Summer";
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference myRef = database.getReference("Users").child(country).child(season);
-                Users users = new Users(user.getDisplayName(), user.getEmail(), user.getPhotoUrl().toString());
-                myRef.child("jjjjjjjjjjjjj").setValue(users);
-                DatabaseReference myRef1 = database.getReference("Users").child(country).child(season);
-                myRef1.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        Users users1 = snapshot.getValue(Users.class);
-                        System.out.println(users1.getName());
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });*/
-
+                Intent intent = new Intent(getActivity().getApplicationContext(), updateProfile.class);
+                startActivity(intent);
             }
         });
         resetPassword = getActivity().findViewById(R.id.resetPassword);

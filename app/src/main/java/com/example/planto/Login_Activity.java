@@ -38,6 +38,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class Login_Activity extends AppCompatActivity {
     FirebaseAuth mAuth;
@@ -133,6 +134,8 @@ public class Login_Activity extends AppCompatActivity {
         mAuth.signInWithCredential(credential).addOnCompleteListener(Login_Activity.this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
+                FirebaseUser user = mAuth.getCurrentUser();
+                createFirestoreUser(user.getDisplayName(),user.getUid(),user.getPhotoUrl().toString(),user.getEmail());
                 Toast.makeText(getApplicationContext(), "Logged in successfully", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
@@ -180,5 +183,11 @@ public class Login_Activity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
+    }
+    void createFirestoreUser(String userName,String id,String avatar_url,String email){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        User user = new User(userName,email);
+        user.setAvatar_url(avatar_url);
+        db.collection("users").document(id).set(user);
     }
 }

@@ -1,28 +1,57 @@
 package com.example.planto;
 
+import com.google.firebase.Timestamp;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Post {
+
+    private String userId;
+    private String postId;
+    private String content;
     private String imageUrl;
-    private String text;
-    private String user;
-    private String id;
-    private int upvotes;
-    private int downvotes;
-    private ArrayList<String> comments;
+    private List<React> likes ;
+    private List<React> dislikes;
+    private List<Comment> comments;
+    private Timestamp createdAt;
 
     public Post() {
-        // Default constructor required for calls to DataSnapshot.getValue(Post.class)
     }
 
-    public Post(String imageUrl, String text, String user, int upvotes, int downvotes, ArrayList<String> comments) {
-        this.imageUrl = imageUrl;
-        this.text = text;
-        this.user = user;
-        this.upvotes = upvotes;
-        this.downvotes = downvotes;
+    public Post(String user_id, String content, String image_url,List<React> likes, List<React> dislikes, List<Comment> comments) {
+        this.userId = user_id;
+        this.content = content;
+        this.imageUrl = image_url;
+        this.likes = likes;
+        this.dislikes = dislikes;
         this.comments = comments;
+        this.createdAt = Timestamp.now();
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getPostId() {
+        return postId;
+    }
+
+    public void setPostId(String postId) {
+        this.postId = postId;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public String getImageUrl() {
@@ -33,51 +62,35 @@ public class Post {
         this.imageUrl = imageUrl;
     }
 
-    public String getText() {
-        return text;
+    public List<React> getLikes() {
+        return likes;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setLikes(List<React> likes) {
+        this.likes = likes;
     }
 
-    public String getId() {
-        return id;
+    public List<React> getDislikes() {
+        return dislikes;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setDislikes(List<React> dislikes) {
+        this.dislikes = dislikes;
     }
 
-    public String getUser() {
-        return user;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
-    }
-
-    public int getUpvotes() {
-        return upvotes;
-    }
-
-    public void setUpvotes(int upvotes) {
-        this.upvotes = upvotes;
-    }
-
-    public int getDownvotes() {
-        return downvotes;
-    }
-
-    public void setDownvotes(int downvotes) {
-        this.downvotes = downvotes;
-    }
-
-    public ArrayList<String> getComments() {
+    public List<Comment> getComments() {
         return comments;
     }
 
-    public void setComments(ArrayList<String> comments) {
+    public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
     }
 }
