@@ -32,9 +32,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class Login_Activity extends AppCompatActivity {
     FirebaseAuth mAuth;
+    FirebaseFirestore db;
     EditText email, password;
     String email_, password_;
     TextView registerNow;
@@ -54,6 +56,7 @@ public class Login_Activity extends AppCompatActivity {
         error = (TextView) findViewById(R.id.error);
         progressBar = (ProgressBar) findViewById(R.id.loading);
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
         tv = findViewById(R.id.tv);
         Paint paint = tv.getPaint();
 
@@ -127,6 +130,8 @@ public class Login_Activity extends AppCompatActivity {
         mAuth.signInWithCredential(credential).addOnCompleteListener(Login_Activity.this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
+                FirebaseUser user = mAuth.getCurrentUser();
+                createFirestoreUser(user.getDisplayName(), user.getEmail(), user.getPhotoUrl().toString(),user.getUid());
                 Toast.makeText(getApplicationContext(), "Logged in successfully", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
@@ -174,5 +179,11 @@ public class Login_Activity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
+    }
+
+    void createFirestoreUser(String username , String email , String photoUrl,String id) {
+        User user = new User(username, email);
+        user.setAvatar_url(photoUrl);
+        db.collection("users").document(id).set(user);
     }
 }

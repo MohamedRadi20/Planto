@@ -101,6 +101,11 @@ public class Profile_Fragment extends Fragment {
                     Picasso.get().load(user.getAvatar_url()).into(profile_image);
                 }
             }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+               Toast.makeText(getActivity().getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
+            }
         });
         logout_profile = getActivity().findViewById(R.id.logout_profile);
         logout_profile.setOnClickListener(new View.OnClickListener() {
