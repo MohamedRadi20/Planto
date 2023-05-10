@@ -55,7 +55,7 @@ public class Community_Fragment extends Fragment {
                 List<Post> posts = new ArrayList<>();
                 for (QueryDocumentSnapshot document : value) {
                     Post post = document.toObject(Post.class);
-                    post.setId(document.getId());
+                    post.setPostId(document.getId());
                     posts.add(post);
                 }
                 MyAdapter adapter = new MyAdapter(posts);

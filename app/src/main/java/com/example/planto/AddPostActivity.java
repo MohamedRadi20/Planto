@@ -58,7 +58,8 @@ public class AddPostActivity extends AppCompatActivity {
     private ImageView imageView;
     private EditText mEditText;
     private Uri mImageUri;
-    FirebaseUser user;
+    FirebaseUser firebaseUser;
+    User user;
     FirebaseStorage storage;
     FirebaseFirestore db;
 
@@ -68,9 +69,15 @@ public class AddPostActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_post);
         imageView = findViewById(R.id.post_image_view);
         mEditText = findViewById(R.id.post_text_edit_text);
-        user = FirebaseAuth.getInstance().getCurrentUser();
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         storage = FirebaseStorage.getInstance();
         db = FirebaseFirestore.getInstance();
+        db.collection("users").document(firebaseUser.getUid()).get().addOnSuccessListener(new OnSuccessListener<com.google.firebase.firestore.DocumentSnapshot>() {
+            @Override
+            public void onSuccess(com.google.firebase.firestore.DocumentSnapshot documentSnapshot) {
+                user = documentSnapshot.toObject(User.class);
+            }
+        });
         Button addPostButton = findViewById(R.id.add_post_button);
         addPostButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -283,9 +290,10 @@ public class AddPostActivity extends AppCompatActivity {
                     public void onSuccess(Uri uri) {
                         // Handle successful download URL retrieval
                         String downloadUrl = uri.toString();
-                        ArrayList<String> comments = new ArrayList<>();
-                        comments.add("comment1");
-                        Post post = new Post(downloadUrl, mEditText.getText().toString(), user.getEmail(), 0, 0, comments);
+                        List<Comment> comments = new ArrayList<>();
+                        List<React> likes = new ArrayList<>();
+                        List<React> dislikes = new ArrayList<>();
+                        Post post = new Post(firebaseUser.getUid(), mEditText.getText().toString(), downloadUrl, likes, dislikes, comments);
                         db.collection("posts").document(newPostId).set(post).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
