@@ -134,6 +134,9 @@ public class object_Detector_Class {
                     Imgproc.rectangle(rotated_mat_image, new Point(left, top), new Point(right, bottom), new Scalar(random_num, random_num2, random_num3, 0), 7);
                     Imgproc.putText(rotated_mat_image, labelList.get((int) class_value) + " %" + formattedNumber, new Point(left, bottom), 3, 1, new Scalar(0, 255, 0, 255), 2);
 
+//                Imgproc.rectangle(rotated_mat_image, new Point(left, top), new Point(right, bottom), new Scalar(random_num, random_num2, random_num3, 0), -1);
+//                Imgproc.putText(rotated_mat_image, labelList.get((int) class_value), new Point(left, top + 20), 3, 1, new Scalar(0, 255, 0, 255), 2);
+
             }
 
         }

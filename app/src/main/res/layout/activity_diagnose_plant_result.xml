@@ -15,8 +15,12 @@
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="3dp"
-        android:src="@drawable/logo" />
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/logo"
+        android:elevation="10dp"
+        android:padding="10dp"
+        android:background="@color/white"/>
+
 
     <TextView
         android:id="@+id/textView_result"
@@ -24,11 +28,14 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
-        android:layout_marginBottom="3dp"
+        android:layout_marginBottom="10dp"
         android:fontFamily="@font/poppinsbold"
         android:layout_gravity="center"
         android:text="Plant Disease Diagnosis..."
         android:textColor="@color/purple_700"
+        android:elevation="10dp"
+        android:padding="10dp"
+        android:background="@color/white"
         android:textSize="26sp"
         android:textStyle="bold"/>
 
@@ -39,7 +46,10 @@
         android:layout_gravity="center"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
-        android:fillViewport="false">
+        android:fillViewport="false"
+        android:elevation="10dp"
+        android:padding="10dp"
+        android:background="@color/white">
 
         <TextView
             android:id="@+id/textView_description"
@@ -60,6 +70,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginBottom="3dp"
+        android:layout_marginTop="19dp"
         android:text="More"
         android:textAllCaps="false"/>
 
