@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Weed_Activity">
+    tools:context=".Plantune_Activity">
 
     <TextView
         android:id="@+id/cool_tv1"

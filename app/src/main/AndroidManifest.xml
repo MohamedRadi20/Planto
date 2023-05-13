@@ -75,7 +75,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".Weed_Activity"
+            android:name=".Plantune_Activity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
