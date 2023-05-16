@@ -133,6 +133,7 @@ public class Plant_Details extends AppCompatActivity {
         }
 
     }
+
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);

@@ -20,11 +20,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.MediaController;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -45,10 +47,18 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class Plantune_Activity extends AppCompatActivity implements View.OnClickListener {
+    final static String URL = "https://perenual.com/api/species-list?&key=sk-tSG4645bc67775b7f873";
+    final static String Edible = "&edible=1";
+    final static String Poisonous = "&poisonous=1&6";
+    final static String indoor = "&indoor=1";
+    final static String pages = "&page=1";
+
     EditText edPlantName;
     Button btnSubmit;
+    Spinner filterSpinner;
 
     String plantName = null;
     Boolean searchIsOn = false;
@@ -66,12 +76,13 @@ public class Plantune_Activity extends AppCompatActivity implements View.OnClick
         edPlantName = findViewById(R.id.plant_name_et);
         btnSubmit = findViewById(R.id.submit_btn);
         textView_no_result = findViewById(R.id.no_results_tv);
+        filterSpinner = findViewById(R.id.filter_spinner);
 
         btnSubmit.setOnClickListener(this);
 
         if (isNetworkAvailable()) {
             try {
-                queryData();
+                queryData(URL);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -84,6 +95,69 @@ public class Plantune_Activity extends AppCompatActivity implements View.OnClick
         plantAdapter = new PlantAdapter();
         plantRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         plantRecyclerView.setAdapter(plantAdapter);
+
+        //TODO make pages for this dammit recycle_view
+
+        filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String filter = (String) parent.getItemAtPosition(position);
+                if(filter.equals("Edible")){
+                    try {
+                        spinnerChoiceProcessing(URL+Edible);
+                        Toast.makeText(getApplicationContext(), filter, Toast.LENGTH_LONG).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }else if (filter.equals("Poisonous")){
+                    try {
+                        spinnerChoiceProcessing(URL+Poisonous);
+                        Toast.makeText(getApplicationContext(), filter, Toast.LENGTH_LONG).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }else if (filter.equals("Indoor")){
+                    try {
+                        spinnerChoiceProcessing(URL+indoor);
+                        Toast.makeText(getApplicationContext(), filter, Toast.LENGTH_LONG).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }else if (filter.equals("Indoor + Edible")){
+                    try {
+                        spinnerChoiceProcessing(URL+Edible+indoor);
+                        Toast.makeText(getApplicationContext(), filter, Toast.LENGTH_LONG).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }else if (filter.equals("Indoor + Poisonous")){
+                    try {
+                        spinnerChoiceProcessing(URL+Poisonous+indoor);
+                        Toast.makeText(getApplicationContext(), filter, Toast.LENGTH_LONG).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing
+            }
+        });
+    }
+
+    public void spinnerChoiceProcessing(String urlSpinner) throws IOException {
+
+        if (isNetworkAvailable()) {
+            try {
+                queryData(urlSpinner);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Toast.makeText(getApplicationContext(), "No internet connection", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private boolean isNetworkAvailable() {
@@ -106,7 +180,7 @@ public class Plantune_Activity extends AppCompatActivity implements View.OnClick
                 plantAdapter.notifyDataSetChanged();
 
                 try {
-                    queryData();
+                    queryData(URL);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }}
@@ -114,8 +188,8 @@ public class Plantune_Activity extends AppCompatActivity implements View.OnClick
         }
     }
 
-    public void queryData() throws IOException {
-        URL url= NetworkUtils.buildUrl();
+    public void queryData(String urlString) throws IOException {
+        URL url = new URL(urlString);
         new DataTask().execute(url);
     }
 
@@ -217,7 +291,7 @@ public class Plantune_Activity extends AppCompatActivity implements View.OnClick
                     String plantCommonName = plantObject.get("common_name").toString();
                     Log.d("adApi",plantCommonName);
                     Log.d("TextPlantName","plantName");
-                    if (plantCommonName.contains(plantName)) {
+                    if (plantCommonName.toLowerCase(Locale.ROOT).contains(plantName.toLowerCase(Locale.ROOT))) {
                         String scientificName = plantObject.getJSONArray("scientific_name").getString(0);
 
                         String commonName = plantObject.get("common_name").toString();
