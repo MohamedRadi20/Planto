@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
-    public void grating_compatibility_service(View view) {
+    public void Plantune_service(View view) {
         Intent intent = new Intent(getApplicationContext(), Plantune_Activity.class);
         startActivity(intent);
         finish();

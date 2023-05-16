@@ -2,8 +2,11 @@ package com.example.planto;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -57,8 +60,8 @@ public class Plantune_Activity extends AppCompatActivity implements View.OnClick
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_plantune);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         edPlantName = findViewById(R.id.plant_name_et);
         btnSubmit = findViewById(R.id.submit_btn);
@@ -66,10 +69,14 @@ public class Plantune_Activity extends AppCompatActivity implements View.OnClick
 
         btnSubmit.setOnClickListener(this);
 
-        try {
-            queryData();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (isNetworkAvailable()) {
+            try {
+                queryData();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
         }
 
         // Initialize the RecyclerView and its adapter
@@ -79,6 +86,12 @@ public class Plantune_Activity extends AppCompatActivity implements View.OnClick
         plantRecyclerView.setAdapter(plantAdapter);
     }
 
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 
     @Override
     public void onClick(View v) {
@@ -130,9 +143,11 @@ public class Plantune_Activity extends AppCompatActivity implements View.OnClick
             try {
                 myObject = new JSONObject(data);
                 JSONArray plantArray = myObject.getJSONArray("data");
+                List<String> plantIds = new ArrayList<>();
                 List<Plant> plantList = new ArrayList<>();
                 for (int i=0; i<plantArray.length();i++) {
                     JSONObject plantObject = plantArray.getJSONObject(i);
+                    String plantId = plantObject.getString("id");
                     String scientificName = plantObject.getJSONArray("scientific_name").getString(0);
 
                     String commonName = plantObject.get("common_name").toString();
@@ -180,9 +195,10 @@ public class Plantune_Activity extends AppCompatActivity implements View.OnClick
 
                     // Add the plant to the list that will be displayed in the RecyclerView
                     plantList.add(new Plant(commonName, scientificName, imageUrl, sunlightString, Other_namesString, cycle, watering));
+                    plantIds.add(plantId);
 
                     // Update the RecyclerView adapter with the new plant data
-                    plantAdapter.setData(plantList);
+                    plantAdapter.setData(plantList, plantIds);
                 }} catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -193,13 +209,15 @@ public class Plantune_Activity extends AppCompatActivity implements View.OnClick
             try {
                 myObject = new JSONObject(data);
                 JSONArray plantArray = myObject.getJSONArray("data");
+                List<String> plantIds = new ArrayList<>();
                 List<Plant> plantList = new ArrayList<>();
                 for (int i=0; i<plantArray.length();i++) {
                     JSONObject plantObject = plantArray.getJSONObject(i);
+                    String plantId = plantObject.getString("id");
                     String plantCommonName = plantObject.get("common_name").toString();
                     Log.d("adApi",plantCommonName);
                     Log.d("TextPlantName","plantName");
-                    if (plantCommonName.equals(plantName)) {
+                    if (plantCommonName.contains(plantName)) {
                         String scientificName = plantObject.getJSONArray("scientific_name").getString(0);
 
                         String commonName = plantObject.get("common_name").toString();
@@ -245,10 +263,9 @@ public class Plantune_Activity extends AppCompatActivity implements View.OnClick
 
                         // Add the plant to the list that will be displayed in the RecyclerView
                         plantList.add(new Plant(commonName, scientificName, imageUrl, sunlightString, Other_namesString, cycle, watering));
-                        // Update the RecyclerView adapter with the new plant data
-                        plantAdapter.setData(plantList);
+                        plantIds.add(plantId);
+                        plantAdapter.setData(plantList, plantIds);
                         plantAdapter.notifyDataSetChanged();
-                        break;
                     }
                     else
                     {
@@ -257,5 +274,27 @@ public class Plantune_Activity extends AppCompatActivity implements View.OnClick
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+                return true;
+            case R.id.feedback:
+                Toast.makeText(getApplicationContext(), "Coming soon",
+                        Toast.LENGTH_SHORT).show();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.option_menu,menu);
+        return true;
     }
 }

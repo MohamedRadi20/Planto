@@ -86,8 +86,7 @@
             android:layout_gravity="center"
             android:layout_marginStart="79dp"
             android:layout_marginEnd="39dp"
-            android:layout_marginBottom="16dp"
-            android:src="@drawable/soil" />
+            android:layout_marginBottom="16dp"/>
 
     </LinearLayout>
 
