@@ -6,11 +6,11 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-public class MyViewHolder extends RecyclerView.ViewHolder {
+public class PostsViewHolder extends RecyclerView.ViewHolder {
     public ImageView imageView,like,dislike,item_profile_image;
     public TextView textView,likeCount,dislikeCount,item_username,comments_count;
 
-    public MyViewHolder(View itemView) {
+    public PostsViewHolder(View itemView) {
         super(itemView);
         imageView = itemView.findViewById(R.id.item_image);
         textView = itemView.findViewById(R.id.item_text);

@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,25 +18,31 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
+public class PostsAdapter extends RecyclerView.Adapter<PostsViewHolder> {
     private List<Post> itemList;
     FirebaseUser firebaseUser;
     FirebaseFirestore db;
     User user;
 
-    public MyAdapter(List<Post> itemList) {
+
+    public PostsAdapter(List<Post> itemList) {
         this.itemList = itemList;
     }
 
-    @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_layout, parent, false);
-        return new MyViewHolder(itemView);
+    public void setPosts(List<Post> posts) {
+        this.itemList = posts;
+        notifyDataSetChanged();
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public PostsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_layout, parent, false);
+        return new PostsViewHolder(itemView);
+    }
+
+    @Override
+    public void onBindViewHolder(PostsViewHolder holder, int position) {
         Post post = itemList.get(position);
         //holder.imageView.setImageResource(R.drawable.firebaseUser);
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -74,68 +80,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         holder.like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean isLiked = false;
-                int index1 = 0;
-                for (React react : post.getLikes()) {
-                    if (react.getUserId().equals(firebaseUser.getUid())) {
-                        isLiked = true;
-                        index1 = post.getLikes().indexOf(react);
-                        break;
-                    }
-                }
-                boolean isDisliked = false;
-                int index2 = 0;
-                for (React react : post.getDislikes()) {
-                    if (react.getUserId().equals(firebaseUser.getUid())) {
-                        isDisliked = true;
-                        index2 = post.getDislikes().indexOf(react);
-                        break;
-                    }
-                }
-                if (isDisliked) return;
-                if (isLiked) {
-                    post.getLikes().remove(index1);
-                    db.collection("posts").document(post.getPostId()).update("likes", post.getLikes());
-                    holder.likeCount.setText(String.valueOf(post.getLikes().size()));
-                } else {
-                    post.getLikes().add(new React(firebaseUser.getUid(), "like"));
-                    db.collection("posts").document(post.getPostId()).update("likes", post.getLikes());
-                    holder.likeCount.setText(String.valueOf(post.getLikes().size()));
-                }
-
+                handleReaction(post.getLikes(), post.getDislikes(), "like", holder.likeCount, holder.dislikeCount, post);
             }
         });
         holder.dislike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean isLiked = false;
-                int index1 = 0;
-                for (React react : post.getLikes()) {
-                    if (react.getUserId().equals(firebaseUser.getUid())) {
-                        isLiked = true;
-                        index1 = post.getLikes().indexOf(react);
-                        break;
-                    }
-                }
-                boolean isDisliked = false;
-                int index2 = 0;
-                for (React react : post.getDislikes()) {
-                    if (react.getUserId().equals(firebaseUser.getUid())) {
-                        isDisliked = true;
-                        index2 = post.getDislikes().indexOf(react);
-                        break;
-                    }
-                }
-                if (isLiked) return;
-                if (isDisliked) {
-                    post.getDislikes().remove(index2);
-                    db.collection("posts").document(post.getPostId()).update("dislikes", post.getDislikes());
-                    holder.dislikeCount.setText(String.valueOf(post.getDislikes().size()));
-                } else {
-                    post.getDislikes().add(new React(firebaseUser.getUid(), "dislike"));
-                    db.collection("posts").document(post.getPostId()).update("dislikes", post.getDislikes());
-                    holder.dislikeCount.setText(String.valueOf(post.getDislikes().size()));
-                }
+                handleReaction(post.getLikes(), post.getDislikes(), "dislike", holder.likeCount, holder.dislikeCount, post);
             }
         });
     }
@@ -143,6 +94,54 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
     @Override
     public int getItemCount() {
         return itemList.size();
+    }
+
+    private void handleReaction(List<React> likes, List<React> dislikes, String reactionType, TextView likeView, TextView dislikeView,Post post) {
+        int isLiked = checkUserLikes(likes);
+        int isDisliked = checkUserDislikes(dislikes);
+        if (reactionType.equals("like")) {
+            if (isLiked == -1 && isDisliked == -1) {
+                likes.add(new React(firebaseUser.getUid(), "like"));
+                likeView.setText(String.valueOf(likes.size()));
+                db.collection("posts").document(post.getPostId()).update("likes", likes);
+            } else if (isLiked != -1) {
+                likes.remove(isLiked);
+                likeView.setText(String.valueOf(likes.size()));
+                db.collection("posts").document(post.getPostId()).update("likes", likes);
+            }
+        } else {
+            if (isLiked == -1 && isDisliked == -1) {
+                dislikes.add(new React(firebaseUser.getUid(), "dislike"));
+                dislikeView.setText(String.valueOf(dislikes.size()));
+                db.collection("posts").document(post.getPostId()).update("dislikes", dislikes);
+            } else if (isDisliked != -1) {
+                dislikes.remove(isDisliked);
+                dislikeView.setText(String.valueOf(dislikes.size()));
+                db.collection("posts").document(post.getPostId()).update("dislikes", dislikes);
+            }
+        }
+    }
+
+    private int checkUserLikes(List<React> likes) {
+        int index = 0;
+        for (React react : likes) {
+            if (react.getUserId().equals(firebaseUser.getUid())) {
+                return index;
+            }
+            index++;
+        }
+        return -1;
+    }
+
+    private int checkUserDislikes(List<React> dislikes) {
+        int index = 0;
+        for (React react : dislikes) {
+            if (react.getUserId().equals(firebaseUser.getUid())) {
+                return index;
+            }
+            index++;
+        }
+        return -1;
     }
 }
 
