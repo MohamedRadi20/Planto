@@ -9,6 +9,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import pl.droidsonroids.gif.GifImageView;
@@ -27,27 +28,27 @@ public class Home_Fragment extends Fragment {
         return inflater.inflate(R.layout.fragment_home, container, false);
 
     }
-    public void onStart (){
+
+    public void onStart() {
         super.onStart();
         TextView name;
-        ImageView  plant_disease_service , identify_plant_service , separate_seeds_service , grating_compatibility_service;
-        GifImageView home_sun ;
-        Animation left , right , down ;
+        CardView card_view_1, card_view_2, card_view_3, card_view_4;
+        GifImageView home_sun;
+        Animation left, right, down;
 
-        plant_disease_service = getActivity().findViewById(R.id.plant_disease_service);
-        identify_plant_service = getActivity().findViewById(R.id.identify_plant_service);
-        separate_seeds_service = getActivity().findViewById(R.id.separate_seeds_service);
-        grating_compatibility_service = getActivity().findViewById(R.id.grating_compatibility_service);
+        card_view_1 = getActivity().findViewById(R.id.card_view_1);
+        card_view_2 = getActivity().findViewById(R.id.card_view_2);
+        card_view_3 = getActivity().findViewById(R.id.card_view_3);
+        card_view_4 = getActivity().findViewById(R.id.card_view_4);
 
-        down = AnimationUtils.loadAnimation(getActivity().getApplicationContext(),R.anim.down);
-        left = AnimationUtils.loadAnimation(getActivity().getApplicationContext(),R.anim.left);
-        right = AnimationUtils.loadAnimation(getActivity().getApplicationContext(),R.anim.right);
+        down = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.down);
+        left = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.left);
+        right = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.right);
 
-        plant_disease_service.setAnimation(left);
-        identify_plant_service.setAnimation(right);
-        separate_seeds_service.setAnimation(left);
-        grating_compatibility_service.setAnimation(right);
-
+        card_view_1.setAnimation(left);
+        card_view_2.setAnimation(right);
+        card_view_3.setAnimation(left);
+        card_view_4.setAnimation(right);
 
         name = (TextView) getActivity().findViewById(R.id.name);
         name.setText("Straw Hats");
