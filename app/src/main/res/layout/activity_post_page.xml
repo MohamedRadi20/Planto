@@ -25,6 +25,14 @@
             android:layout_gravity="center"
             android:textSize="20sp"
             android:textStyle="bold" />
+        <ImageView
+            android:id="@+id/post_options"
+            android:layout_width="15dp"
+            android:layout_height="25dp"
+            android:src="@drawable/dots"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="5dp"
+            />
     </LinearLayout>
 
     <TextView

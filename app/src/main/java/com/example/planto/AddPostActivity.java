@@ -34,6 +34,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -58,26 +59,27 @@ public class AddPostActivity extends AppCompatActivity {
     private ImageView imageView;
     private EditText mEditText;
     private Uri mImageUri;
-    FirebaseUser firebaseUser;
-    User user;
-    FirebaseStorage storage;
-    FirebaseFirestore db;
+    private FirebaseUser firebaseUser;
+    private User user;
+    private FirebaseStorage storage;
+    private FirebaseFirestore db;
+    private RequestQueue queue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_post);
+
         imageView = findViewById(R.id.post_image_view);
         mEditText = findViewById(R.id.post_text_edit_text);
+
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         storage = FirebaseStorage.getInstance();
         db = FirebaseFirestore.getInstance();
-        db.collection("users").document(firebaseUser.getUid()).get().addOnSuccessListener(new OnSuccessListener<com.google.firebase.firestore.DocumentSnapshot>() {
-            @Override
-            public void onSuccess(com.google.firebase.firestore.DocumentSnapshot documentSnapshot) {
-                user = documentSnapshot.toObject(User.class);
-            }
-        });
+        queue = Volley.newRequestQueue(getApplicationContext());
+
+        fetchUserData();
+
         Button addPostButton = findViewById(R.id.add_post_button);
         addPostButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,7 +87,8 @@ public class AddPostActivity extends AppCompatActivity {
                 addPost();
             }
         });
-        Button uploadPhoto = (Button) findViewById(R.id.upload_photo);
+
+        Button uploadPhoto = findViewById(R.id.upload_photo);
         uploadPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -97,154 +100,154 @@ public class AddPostActivity extends AppCompatActivity {
         gptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String text = mEditText.getText().toString().trim();
-                if (text.isEmpty()) {
-                    Toast.makeText(getApplicationContext(), "Please enter post text", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                // Instantiate the RequestQueue
-                RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-                // Set the URL and request method
-                String url = "https://api.openai.com/v1/engines/text-davinci-003/completions";
-                int method = Request.Method.POST;
-                // Set the request headers
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json");
-                headers.put("Authorization", "Bearer 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");
-                // Create the request body
-                Map<String, Object> body = new HashMap<>();
-                body.put("prompt", "create a post about " + mEditText.getText().toString() + " with maximum 300 characters");
-                body.put("max_tokens", 1000);
-                body.put("temperature", 0.8);
-                // Convert the request body to JSON
-                String requestBody = new Gson().toJson(body);
-                // Create a new request and add it to the queue
-                JsonObjectRequest request = new JsonObjectRequest(method, url, null,
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                // Handle the response here
-                                JSONArray choices = null;
-                                try {
-                                    choices = response.getJSONArray("choices");
-                                    JSONObject firstChoice = choices.getJSONObject(0);
-                                    String generatedText = firstChoice.getString("text");
-                                    mEditText.setText(generatedText);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-
-                            }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                // Handle any errors that occur
-                                error.printStackTrace();
-                            }
-                        }) {
-                    @Override
-                    public byte[] getBody() {
-                        // Convert the request body to a byte array
-                        return requestBody.getBytes();
-                    }
-
-                    @Override
-                    public Map<String, String> getHeaders() {
-                        // Return the request headers
-                        return headers;
-                    }
-                };
-                queue.add(request);
+                generatePost();
             }
         });
-        Button dall_button = findViewById(R.id.dall_button);
-        dall_button.setOnClickListener(new View.OnClickListener() {
 
+        Button dallButton = findViewById(R.id.dall_button);
+        dallButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-                String url = "https://api.openai.com/v1/images/generations";
-
-                JSONObject jsonBody = new JSONObject();
-                try {
-                    jsonBody.put("prompt", mEditText.getText().toString());
-                    jsonBody.put("num_images", 1);
-                    jsonBody.put("size", "256x256");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                        (Request.Method.POST, url, jsonBody, new Response.Listener<JSONObject>() {
-
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                // Handle successful response
-                                JSONArray choices = null;
-                                try {
-                                    choices = response.getJSONArray("data");
-                                    JSONObject completions = choices.getJSONObject(0);
-                                    String imageURL = completions.getString("url");
-                                    Picasso.get().load(imageURL).into(imageView);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }, new Response.ErrorListener() {
-
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                // Handle error response
-                                error.printStackTrace();
-                            }
-                        }) {
-                    @Override
-                    public Map<String, String> getHeaders() throws AuthFailureError {
-                        Map<String, String> headers = new HashMap<String, String>();
-                        headers.put("Content-Type", "application/json");
-                        headers.put("Authorization", "Bearer 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");
-                        return headers;
-                    }
-                };
-
-                // Set timeout duration
-                jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
-                        10000, // Timeout in milliseconds
-                        DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-                ));
-
-                // Add the request to the RequestQueue
-                queue.add(jsonObjectRequest);
-
+                generateImage();
             }
         });
-
     }
 
+    private void fetchUserData() {
+        db.collection("users").document(firebaseUser.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                user = documentSnapshot.toObject(User.class);
+            }
+        });
+    }
 
     private void openFileChooser() {
-        // Create an intent to open the gallery
-        Intent iGallary = new Intent(Intent.ACTION_PICK);
-        // Set the data type for the intent to images
-        iGallary.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        // Start the activity using this intent and return the result
-        startActivityForResult(iGallary, PICK_IMAGE_REQUEST);
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST);
     }
 
     @Override
-
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // Step 1: Check if the request code and result code are matching
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            // Step 2: Get the image uri from the data
             mImageUri = data.getData();
-            // Step 3: Display the image in the image view
             imageView.setImageURI(mImageUri);
         }
+    }
+
+    private void generatePost() {
+        String text = mEditText.getText().toString().trim();
+        if (text.isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Please enter post text", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String url = "https://api.openai.com/v1/engines/text-davinci-003/completions";
+        String prompt = "create a post about " + text + " with a maximum of 300 characters";
+        int maxTokens = 1000;
+        double temperature = 0.8;
+
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", "application/json");
+        headers.put("Authorization", "Bearer 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");
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("prompt", prompt);
+        body.put("max_tokens", maxTokens);
+        body.put("temperature", temperature);
+
+        String requestBody = new Gson().toJson(body);
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray choices = response.getJSONArray("choices");
+                            JSONObject firstChoice = choices.getJSONObject(0);
+                            String generatedText = firstChoice.getString("text");
+                            mEditText.setText(generatedText);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                    }
+                }) {
+            @Override
+            public byte[] getBody() {
+                return requestBody.getBytes();
+            }
+
+            @Override
+            public Map<String, String> getHeaders() {
+                return headers;
+            }
+        };
+
+        queue.add(request);
+    }
+
+    private void generateImage() {
+        String text = mEditText.getText().toString().trim();
+        if (text.isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Please enter post text", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String url = "https://api.openai.com/v1/images/generations";
+
+        JSONObject jsonBody = new JSONObject();
+        try {
+            jsonBody.put("prompt", text);
+            jsonBody.put("num_images", 1);
+            jsonBody.put("size", "256x256");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray choices = response.getJSONArray("data");
+                            JSONObject completions = choices.getJSONObject(0);
+                            String imageURL = completions.getString("url");
+                            Picasso.get().load(imageURL).into(imageView);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json");
+                headers.put("Authorization", "Bearer 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");
+                return headers;
+            }
+        };
+
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+                10000, // Timeout in milliseconds
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        ));
+
+        queue.add(jsonObjectRequest);
     }
 
     private void addPost() {
@@ -254,46 +257,34 @@ public class AddPostActivity extends AppCompatActivity {
             return;
         }
 
-       /* if (mImageUri == null) {
-            Toast.makeText(this, "Please select an image", Toast.LENGTH_SHORT).show();
-            return;
-        }*/
         String newPostId = db.collection("posts").document().getId();
-        // Save the post to the database or send it to the server
-        // Create a storage reference from our app
         StorageReference storageRef = storage.getReference().child("posts");
-
-        // Create a reference to "image.jpg"
         StorageReference imageRef = storageRef.child(newPostId);
 
-        // Get the data from an ImageView as bytes
         imageView.setDrawingCacheEnabled(true);
         imageView.buildDrawingCache();
         Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] data = baos.toByteArray();
+
         UploadTask uploadTask = imageRef.putBytes(data);
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                // Handle unsuccessful uploads
                 Toast.makeText(getApplicationContext(), "Fail", Toast.LENGTH_SHORT).show();
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                // ...
                 taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        // Handle successful download URL retrieval
                         String downloadUrl = uri.toString();
                         List<Comment> comments = new ArrayList<>();
                         List<React> likes = new ArrayList<>();
                         List<React> dislikes = new ArrayList<>();
-                        Post post = new Post(firebaseUser.getUid(), mEditText.getText().toString(), downloadUrl, likes, dislikes, comments);
+                        Post post = new Post(firebaseUser.getUid(), text, downloadUrl, likes, dislikes, comments);
                         db.collection("posts").document(newPostId).set(post).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
@@ -304,13 +295,12 @@ public class AddPostActivity extends AppCompatActivity {
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
-                        // Handle unsuccessful download URL retrieval
                         System.out.println(exception);
                     }
                 });
             }
         });
+
         finish();
     }
-
 }
