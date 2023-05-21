@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -30,8 +31,6 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import org.json.JSONObject;
-
-import pl.droidsonroids.gif.GifImageView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -86,7 +85,14 @@ public class Home_Fragment extends Fragment {
         right = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.right);
         fade_in = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.fade_in);
 
-        mCityFinder.setAnimation(fade_in);
+        // Set up the fade-in animation
+        mCityFinder.setAlpha(0.0f);
+        mCityFinder.setVisibility(View.VISIBLE);
+        mCityFinder.animate()
+                .alpha(1.0f)
+                .setDuration(900)
+                .setInterpolator(new AccelerateInterpolator())
+                .start();
         card_view_1.setAnimation(left);
         card_view_2.setAnimation(right);
         card_view_3.setAnimation(left);
@@ -95,15 +101,13 @@ public class Home_Fragment extends Fragment {
         name = getActivity().findViewById(R.id.name);
         name.setText("Straw Hats");
 
-        //TODO create the cityFinder activity
-
-//        mCityFinder.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(getActivity().getApplicationContext(), cityFinder.class);
-//                startActivity(intent);
-//            }
-//        });
+        mCityFinder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity().getApplicationContext(), City_Finder.class);
+                startActivity(intent);
+            }
+        });
 
     }
 
@@ -200,7 +204,7 @@ public class Home_Fragment extends Fragment {
 
                 Toast.makeText(getActivity().getApplicationContext(), "Data Get Success", Toast.LENGTH_SHORT).show();
 
-                weatherData weatherD = weatherData.fromJson(response);
+                Weather_Data weatherD = Weather_Data.fromJson(response);
                 updateUI(weatherD);
             }
 
@@ -212,7 +216,7 @@ public class Home_Fragment extends Fragment {
 
     }
 
-    private void updateUI(weatherData weather) {
+    private void updateUI(Weather_Data weather) {
 
         Temperature.setText(weather.getmTemperature());
         NameofCity.setText(weather.getMcity());

@@ -5,15 +5,15 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class weatherData {
+public class Weather_Data {
 
     private String mTemperature, micon, mcity, mWeatherType, mWeather_icon_Type, humidity, wind_speed;
     private int mCondition;
 
-    public static weatherData fromJson(JSONObject jsonObject) {
+    public static Weather_Data fromJson(JSONObject jsonObject) {
 
         try {
-            weatherData weatherD = new weatherData();
+            Weather_Data weatherD = new Weather_Data();
             weatherD.mcity = jsonObject.getString("name");
             weatherD.mCondition = jsonObject.getJSONArray("weather").getJSONObject(0).getInt("id");
             weatherD.mWeatherType = jsonObject.getJSONArray("weather").getJSONObject(0).getString("main");
