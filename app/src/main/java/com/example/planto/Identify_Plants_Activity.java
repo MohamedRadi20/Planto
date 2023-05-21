@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,12 +25,12 @@ import android.widget.Toast;
 
 import pl.droidsonroids.gif.GifImageView;
 
-public class Identify_Plants_Activity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
-    ImageView imageView_dummy , imageView_arrow;
-    GifImageView imageView_button;
-    Animation animation_left , animation_right, fade_in;
-    TextView textView1 , textView2;
-    Button upload_button ;
+public class Identify_Plants_Activity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+    private Handler handlerAnimation = new Handler();
+    private ImageView ar_imgAnimation1, ar_imgAnimation2;
+    private Button ar_camera_button;
+    Animation animation_left, animation_right, fade_in;
+    TextView textView1, textView2;
     SharedPreferences pref;
     Spinner spinner;
 
@@ -39,53 +40,104 @@ public class Identify_Plants_Activity extends AppCompatActivity implements Adapt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_identify_plants);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        textView1 = findViewById(R.id.cool_tv1);
+        textView2 = findViewById(R.id.cool_tv2);
+        ar_imgAnimation1 = findViewById(R.id.ar_imgAnimation1);
+        ar_imgAnimation2 = findViewById(R.id.ar_imgAnimation2);
+        ar_camera_button = findViewById(R.id.ar_camera_button);
         spinner = findViewById(R.id.action_bar_spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.model_spinner, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+
+        CharSequence[] items = getResources().getTextArray(R.array.model_spinner);
+        CustomSpinnerAdapter adapter = new CustomSpinnerAdapter(this, R.layout.custom_spinner_item, items);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
 
-        pref = getApplicationContext().getSharedPreferences("models",MODE_PRIVATE);
+        pref = getApplicationContext().getSharedPreferences("the_ssd_models", MODE_PRIVATE);
 
-        imageView_dummy = findViewById(R.id.cameraReasult);
-        imageView_arrow = findViewById(R.id.arrow);
-
-        imageView_button =findViewById(R.id.ar_camera_button);
-        imageView_button.setOnClickListener(new View.OnClickListener() {
+        ar_camera_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), Camera_Activity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP));
             }
         });
 
-        textView1 = findViewById(R.id.cool_tv1);
-        textView2 = findViewById(R.id.cool_tv2);
-        upload_button = findViewById(R.id.upload);
-
-        animation_left = AnimationUtils.loadAnimation(this,R.anim.left);
-        animation_right = AnimationUtils.loadAnimation(this,R.anim.right);
-        fade_in = AnimationUtils.loadAnimation(this,R.anim.fade_in);
+        animation_left = AnimationUtils.loadAnimation(this, R.anim.left);
+        animation_right = AnimationUtils.loadAnimation(this, R.anim.right);
 
         textView1.setAnimation(animation_left);
         textView2.setAnimation(animation_left);
-        imageView_dummy.setAnimation(animation_right);
-        imageView_arrow.setAnimation(fade_in);
-        imageView_button.setAnimation(fade_in);
-        upload_button.setAnimation(fade_in);
+
+        startPulse();
+
     }
+
+    private void startPulse() {
+        runnable.run();
+    }
+
+    // TODO circle.xml   round_button_blue.xml   color/round_button_clicked.xml
+
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            ar_imgAnimation1.animate().scaleX(4f).scaleY(4f).alpha(0f).setDuration(1000)
+                    .withEndAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            ar_imgAnimation1.setScaleX(1f);
+                            ar_imgAnimation1.setScaleY(1f);
+                            ar_imgAnimation1.setAlpha(1f);
+                        }
+                    });
+
+            ar_imgAnimation2.animate().scaleX(4f).scaleY(4f).alpha(0f).setDuration(700)
+                    .withEndAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            ar_imgAnimation2.setScaleX(1f);
+                            ar_imgAnimation2.setScaleY(1f);
+                            ar_imgAnimation2.setAlpha(1f);
+                        }
+                    });
+
+            handlerAnimation.postDelayed(this, 1500);
+        }
+    };
+
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String text = parent.getItemAtPosition(position).toString();
-        if(text.equals("Fruits")){
+        if (text.equals("Fruits")) {
             SharedPreferences.Editor editor = pref.edit();
-            editor.putBoolean("isFruits",true);
+            editor.putBoolean("isFruits", true);
+            editor.putBoolean("isOrnamentals", false);
+            editor.putBoolean("isFlowers", false);
+            editor.putBoolean("isPests", false);
             editor.commit();
             Toast.makeText(parent.getContext(), text, Toast.LENGTH_SHORT).show();
-        }else{
+        } else if (text.equals("Ornamentals")) {
             SharedPreferences.Editor editor = pref.edit();
-            editor.putBoolean("isFruits",false);
+            editor.putBoolean("isFruits", false);
+            editor.putBoolean("isOrnamentals", true);
+            editor.putBoolean("isFlowers", false);
+            editor.putBoolean("isPests", false);
+            editor.commit();
+            Toast.makeText(parent.getContext(), text + " fuck", Toast.LENGTH_SHORT).show();
+        } else if (text.equals("Flowers")) {
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putBoolean("isFruits", false);
+            editor.putBoolean("isOrnamentals", false);
+            editor.putBoolean("isFlowers", true);
+            editor.putBoolean("isPests", false);
+            editor.commit();
+            Toast.makeText(parent.getContext(), text + " fuck", Toast.LENGTH_SHORT).show();
+        } else if (text.equals("Pests")) {
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putBoolean("isFruits", false);
+            editor.putBoolean("isOrnamentals", false);
+            editor.putBoolean("isFlowers", false);
+            editor.putBoolean("isPests", true);
             editor.commit();
             Toast.makeText(parent.getContext(), text + " fuck", Toast.LENGTH_SHORT).show();
         }
@@ -94,13 +146,6 @@ public class Identify_Plants_Activity extends AppCompatActivity implements Adapt
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
-    }
-
-    protected void onActivityResult(int requestCode , int resultCode, @Nullable Intent data){
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==100){
-            Bitmap photo = (Bitmap)data.getExtras().get("data");
-            imageView_dummy.setImageBitmap(photo);}
     }
 
     @Override
@@ -121,7 +166,8 @@ public class Identify_Plants_Activity extends AppCompatActivity implements Adapt
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.option_menu,menu);
+        inflater.inflate(R.menu.option_menu, menu);
         return true;
     }
+
 }

@@ -41,13 +41,12 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
     private Handler handlerAnimation = new Handler();
     private ImageView imgAnimation1;
     private ImageView imgAnimation2;
-    private Button button;
-    Animation animation_left , animation_right, fade_in;
-    Button upload_button ;
-    TextView diagnose_plant_activity_title_textView , diagnose_plant_activity_entry_textView;
+    private Button button, upload_button;
+    Animation animation_left, animation_right, fade_in;
+    TextView diagnose_plant_activity_title_textView, diagnose_plant_activity_entry_textView;
     int image_size_for_the_model = 128;
-    String First_Result = "", Second_Result = "" ;
-    float maxConfidence = 0 , secondMaxConfidence = 0 ;
+    String First_Result = "", Second_Result = "";
+    float maxConfidence = 0, secondMaxConfidence = 0;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -66,22 +65,19 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
                     100);
         }
 
-        upload_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent iGallary = new Intent(Intent.ACTION_PICK);
-                iGallary.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(iGallary , GALLERY_RQ_CODE);
-            }
+        upload_button.setOnClickListener(view -> {
+            Intent iGallary = new Intent(Intent.ACTION_PICK);
+            iGallary.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(iGallary, GALLERY_RQ_CODE);
         });
 
         diagnose_plant_activity_title_textView = findViewById(R.id.diagnose_plant_activity_title_textView);
         diagnose_plant_activity_entry_textView = findViewById(R.id.diagnose_plant_activity_entry_textView);
         upload_button = findViewById(R.id.upload);
 
-        animation_left = AnimationUtils.loadAnimation(this,R.anim.left);
-        animation_right = AnimationUtils.loadAnimation(this,R.anim.right);
-        fade_in = AnimationUtils.loadAnimation(this,R.anim.fade_in);
+        animation_left = AnimationUtils.loadAnimation(this, R.anim.left);
+        animation_right = AnimationUtils.loadAnimation(this, R.anim.right);
+        fade_in = AnimationUtils.loadAnimation(this, R.anim.fade_in);
 
         diagnose_plant_activity_title_textView.setAnimation(animation_left);
         diagnose_plant_activity_entry_textView.setAnimation(animation_left);
@@ -94,12 +90,9 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
 
         startPulse();
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(intent,3);
-            }
+        button.setOnClickListener(v -> {
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(intent, 3);
         });
 
     }
@@ -109,6 +102,7 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
     }
 
     // TODO circle.xml   round_button_blue.xml   color/round_button_clicked.xml
+
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
@@ -136,7 +130,7 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
         }
     };
 
-    public void classifyImage(Bitmap image){
+    public void classifyImage(Bitmap image) {
         try {
             Model model = Model.newInstance(getApplicationContext());
 
@@ -148,8 +142,8 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
             image.getPixels(intValues, 0, image.getWidth(), 0, 0, image.getWidth(), image.getHeight());
             int pixel = 0;
 
-            for(int i = 0; i < image_size_for_the_model; i ++){
-                for(int j = 0; j < image_size_for_the_model; j++){
+            for (int i = 0; i < image_size_for_the_model; i++) {
+                for (int j = 0; j < image_size_for_the_model; j++) {
                     int val = intValues[pixel++]; // RGB
                     byteBuffer.putFloat(((val >> 16) & 0xFF) * (1.f / 1));
                     byteBuffer.putFloat(((val >> 8) & 0xFF) * (1.f / 1));
@@ -164,7 +158,7 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
             TensorBuffer outputFeature0 = outputs.getOutputFeature0AsTensorBuffer();
 
             float[] confidences = outputFeature0.getFloatArray();
-            int maxPos = 0 , secondMaxPos = 0 ;
+            int maxPos = 0, secondMaxPos = 0;
 
             for (int i = 0; i < confidences.length; i++) {
                 if (confidences[i] > maxConfidence) {
@@ -174,8 +168,8 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
             }
 
             for (int i = 0; i < confidences.length; i++) {
-                if ((confidences[i] > secondMaxConfidence)&(confidences[i] != maxConfidence)) {
-                    secondMaxConfidence = confidences[i] ;
+                if ((confidences[i] > secondMaxConfidence) & (confidences[i] != maxConfidence)) {
+                    secondMaxConfidence = confidences[i];
                     secondMaxPos = i;
                 }
             }
@@ -193,8 +187,8 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(resultCode == RESULT_OK){
-            if(requestCode == 3){
+        if (resultCode == RESULT_OK) {
+            if (requestCode == 3) {
                 Bitmap image = (Bitmap) data.getExtras().get("data");
                 int dimension = Math.min(image.getWidth(), image.getHeight());
                 image = ThumbnailUtils.extractThumbnail(image, dimension, dimension);
@@ -207,14 +201,14 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
                 byte[] byteArray = stream.toByteArray();
 
                 Intent intent = new Intent(getApplicationContext(), Diagnose_Plant_Result_Activity.class);
-                intent.putExtra("Diagnose_First_Resut",First_Result);
-                intent.putExtra("Diagnose_Second_Resut",Second_Result);
-                intent.putExtra("maxConfidence",maxConfidence);
-                intent.putExtra("secondMaxConfidence",secondMaxConfidence);
+                intent.putExtra("Diagnose_First_Resut", First_Result);
+                intent.putExtra("Diagnose_Second_Resut", Second_Result);
+                intent.putExtra("maxConfidence", maxConfidence);
+                intent.putExtra("secondMaxConfidence", secondMaxConfidence);
                 intent.putExtra("image", byteArray);
                 startActivity(intent);
 
-            }else{
+            } else {
                 Uri dat = data.getData();
                 Bitmap image = null;
                 try {
@@ -230,10 +224,10 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
                 byte[] byteArray = stream.toByteArray();
 
                 Intent intent = new Intent(getApplicationContext(), Diagnose_Plant_Result_Activity.class);
-                intent.putExtra("Diagnose_First_Resut",First_Result);
-                intent.putExtra("Diagnose_Second_Resut",Second_Result);
-                intent.putExtra("maxConfidence",maxConfidence);
-                intent.putExtra("secondMaxConfidence",secondMaxConfidence);
+                intent.putExtra("Diagnose_First_Resut", First_Result);
+                intent.putExtra("Diagnose_Second_Resut", Second_Result);
+                intent.putExtra("maxConfidence", maxConfidence);
+                intent.putExtra("secondMaxConfidence", secondMaxConfidence);
                 intent.putExtra("image", byteArray);
                 startActivity(intent);
 
@@ -260,7 +254,7 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.option_menu,menu);
+        inflater.inflate(R.menu.option_menu, menu);
         return true;
     }
 

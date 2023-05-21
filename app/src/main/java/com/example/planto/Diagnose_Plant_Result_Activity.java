@@ -54,6 +54,8 @@ public class Diagnose_Plant_Result_Activity extends AppCompatActivity {
         maxConfidence = maxConfidence * 100;
         secondMaxConfidence = secondMaxConfidence * 100;
 
+        String formattedMaxConfidence = String.format("%.2f", maxConfidence);
+
         // Set the initial progress to 0
         progressBar.setProgress(0);
 
@@ -66,7 +68,7 @@ public class Diagnose_Plant_Result_Activity extends AppCompatActivity {
         animator.start();
 
         // Update the text view with the progress value
-        textViewProgress.setText(maxConfidence + "%");
+        textViewProgress.setText(formattedMaxConfidence + "%");
 
         // TODO CURE FETCHING AND PROCCESSING
         String description = getString(R.string.Description_1);
