@@ -32,6 +32,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class Login_Activity extends AppCompatActivity {
@@ -182,8 +183,18 @@ public class Login_Activity extends AppCompatActivity {
     }
 
     void createFirestoreUser(String username , String email , String photoUrl,String id) {
-        User user = new User(username, email);
-        user.setAvatar_url(photoUrl);
-        db.collection("users").document(id).set(user);
+        db.collection("users").document(id).get().addOnCompleteListener(new OnCompleteListener< DocumentSnapshot >() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (!document.exists()) {
+                        User user = new User(username, email);
+                        user.setAvatar_url(photoUrl);
+                        db.collection("users").document(id).set(user);
+                    }
+                }
+            }
+        });
     }
 }

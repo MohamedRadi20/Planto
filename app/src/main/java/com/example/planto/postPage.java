@@ -312,6 +312,7 @@ public class postPage extends AppCompatActivity {
         // Create an Intent to open the edit post activity
         Intent intent = new Intent(postPage.this, EditPost.class);
         intent.putExtra("postID", postID);
+
         startActivityForResult(intent, EDIT_POST_REQUEST_CODE);
     }
 
@@ -321,9 +322,11 @@ public class postPage extends AppCompatActivity {
 
         if (requestCode == EDIT_POST_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
             String updatedContent = data.getStringExtra("postContent");
+            String updatedImageUrl = data.getStringExtra("postImageUrl");
             if (updatedContent != null) {
                 // Update the post content in your UI
                 item_text.setText(updatedContent);
+                Picasso.get().load(updatedImageUrl).into(item_image);
             }
         }
     }
