@@ -37,7 +37,7 @@ public class EditPost extends AppCompatActivity {
     private EditText editPostContent;
     private Uri mImageUri;
     private FirebaseStorage storage;
-    private Button btnSave;
+    private Button btnSave, btn_upload_photo;
     private ImageView img_post;
     private String postID;
     private FirebaseFirestore db;
@@ -46,9 +46,9 @@ public class EditPost extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_post);
-        System.out.println("EditPost.java");
         editPostContent = findViewById(R.id.edit_post_content);
         btnSave = findViewById(R.id.btn_save);
+        btn_upload_photo = findViewById(R.id.btn_upload_photo);
         img_post = findViewById(R.id.img_post);
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
@@ -61,7 +61,7 @@ public class EditPost extends AppCompatActivity {
                 savePostChanges();
             }
         });
-        img_post.setOnClickListener(new View.OnClickListener() {
+        btn_upload_photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openFileChooser();
