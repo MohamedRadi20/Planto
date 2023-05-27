@@ -73,10 +73,12 @@
 
         <Spinner
             android:id="@+id/action_bar_spinner"
+            style="@style/MySpinnerStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginBottom="70dp" />
+            android:layout_marginBottom="70dp"
+            android:spinnerMode="dropdown" />
 
     </LinearLayout>
 

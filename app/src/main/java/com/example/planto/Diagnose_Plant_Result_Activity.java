@@ -71,7 +71,9 @@ public class Diagnose_Plant_Result_Activity extends AppCompatActivity {
         textViewProgress.setText(formattedMaxConfidence + "%");
 
         // TODO CURE FETCHING AND PROCCESSING
-        String description = getString(R.string.Description_1);
+        String resourceName = "Description_1";
+        int resourceId = getResources().getIdentifier(resourceName, "string", getPackageName());
+        String description = getString(resourceId);
         textView_description.setText(Html.fromHtml(description));
 
 

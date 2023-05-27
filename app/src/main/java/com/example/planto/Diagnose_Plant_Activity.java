@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -175,6 +176,9 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
             }
 
             String[] classes = getResources().getStringArray(R.array.plant_disease_classes);
+//            for (int i = 0; i < classes.length; i++) {
+//                Log.e("fuck",classes[i]);
+//            }
             First_Result = classes[maxPos];
             Second_Result = classes[secondMaxPos];
 
