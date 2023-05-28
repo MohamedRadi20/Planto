@@ -11,20 +11,21 @@
     tools:context=".Diagnose_Plant_Result_Activity">
 
 <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="240dp"
+        android:layout_width="240dp"
+        android:layout_height="200dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="10dp"
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="8dp"
         app:cardElevation="8dp">
 
         <ImageView
             android:id="@+id/cameraReasult"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="240dp"
+            android:layout_height="200dp"
             android:src="@drawable/logo"
             android:scaleType="fitCenter"/>
 
@@ -32,7 +33,7 @@
             android:id="@+id/textView_result"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="fill_horizontal"
+            android:layout_gravity=""
             android:text="Plant Disease Diagnosis..."
             android:background="@color/night_blue"
             android:textColor="@color/gradient_start_color"
@@ -43,8 +44,8 @@
     </androidx.cardview.widget.CardView>
 
     <FrameLayout
-        android:layout_width="140dp"
-        android:layout_height="140dp"
+        android:layout_width="93dp"
+        android:layout_height="93dp"
         android:layout_gravity="center"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp">
@@ -52,8 +53,8 @@
         <ProgressBar
             android:id="@+id/progress_bar"
             style="@style/CircularDeterminateProgressBar"
-            android:layout_width="140dp"
-            android:layout_height="140dp"
+            android:layout_width="93dp"
+            android:layout_height="93dp"
             android:layout_gravity="center"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
@@ -67,6 +68,7 @@
             android:layout_gravity="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             tools:text="60%"
+            android:textSize="12sp"
             android:textColor="@color/gradient_start_color"
             android:fontFamily="@font/poppinsbold"/>
 
@@ -75,12 +77,12 @@
     <ScrollView
         android:id="@+id/scrollViewfuck"
         android:layout_width="match_parent"
-        android:layout_height="160dp"
+        android:layout_height="240dp"
         android:layout_gravity="center"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:background="@color/white"
         android:elevation="8dp"
         android:padding="16dp">
@@ -92,9 +94,7 @@
             android:fontFamily="@font/poppinsmedium"
             android:justificationMode="inter_word"
             android:text="Plant Disease Diagnosis..."
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            android:textStyle="bold"/>
+            android:textColor="@color/black"/>
 
     </ScrollView>
 
@@ -103,7 +103,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="10dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:backgroundTint="@color/gradient_start_color"

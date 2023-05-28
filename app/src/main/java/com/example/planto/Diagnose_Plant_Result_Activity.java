@@ -41,7 +41,6 @@ public class Diagnose_Plant_Result_Activity extends AppCompatActivity {
         textView_result = findViewById(R.id.textView_result);
         textView_description = findViewById(R.id.textView_description);
 
-        // Assuming you have a byte array extra called "image" in the Intent
         byte[] byteArray = getIntent().getByteArrayExtra("image");
         Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
 
@@ -56,29 +55,24 @@ public class Diagnose_Plant_Result_Activity extends AppCompatActivity {
 
         String formattedMaxConfidence = String.format("%.2f", maxConfidence);
 
-        // Set the initial progress to 0
         progressBar.setProgress(0);
 
-        // Set the maximum progress value
         progressBar.setMax(100);
 
-        // Animate the progress property from 0 to maxConfidence value over 2 seconds
         ObjectAnimator animator = ObjectAnimator.ofInt(progressBar, "progress", 0, (int) maxConfidence);
         animator.setDuration(2000);
         animator.start();
 
-        // Update the text view with the progress value
         textViewProgress.setText(formattedMaxConfidence + "%");
 
-        // TODO CURE FETCHING AND PROCCESSING
-        String resourceName = "Description_1";
+        String resourceName = diagnose_first_result ;
         int resourceId = getResources().getIdentifier(resourceName, "string", getPackageName());
         String description = getString(resourceId);
         textView_description.setText(Html.fromHtml(description));
 
 
         accumulation_of_the_result += String.format("%s: \n",diagnose_first_result);
-        accumulation_of_the_result += String.format("%s:  %.1f%%",diagnose_second_result, secondMaxConfidence * 100);
+        accumulation_of_the_result += String.format("%s:  %.1f%%",diagnose_second_result, secondMaxConfidence);
 
             if(diagnose_first_result != ""){
                 textView_result.setText(accumulation_of_the_result);
