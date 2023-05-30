@@ -101,12 +101,9 @@ public class Home_Fragment extends Fragment {
         name = getActivity().findViewById(R.id.name);
         name.setText("Straw Hats");
 
-        mCityFinder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity().getApplicationContext(), City_Finder.class);
-                startActivity(intent);
-            }
+        mCityFinder.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity().getApplicationContext(), Weather_world.class);
+            startActivity(intent);
         });
 
     }
@@ -115,13 +112,13 @@ public class Home_Fragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Intent mIntent = getActivity().getIntent();
-        String city = mIntent.getStringExtra("City");
-        if (city != null) {
-            getWeatherForNewCity(city);
-        } else {
-            getWeatherForCurrentLocation();
-        }
+//        Intent mIntent = getActivity().getIntent();
+//        String city = mIntent.getStringExtra("City");
+//        if (city != null) {
+//            getWeatherForNewCity(city);
+//        } else {
+        getWeatherForCurrentLocation();
+//        }
     }
 
 

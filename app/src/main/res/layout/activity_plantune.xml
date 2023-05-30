@@ -29,7 +29,7 @@
             android:background="@drawable/bg_round_custom"
             android:hint="Enter Common Name"
             android:imeOptions="actionSearch"
-            android:inputType="text"
+            android:inputType="textAutoCorrect"
             android:maxLines="1"
             android:padding="12dp"
             android:textColor="#222222"
