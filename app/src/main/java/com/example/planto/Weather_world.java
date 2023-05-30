@@ -11,6 +11,10 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.Paint;
+import android.graphics.Shader;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -22,9 +26,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.GridLabelRenderer;
+import com.jjoe64.graphview.LegendRenderer;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -48,10 +56,13 @@ public class Weather_world extends AppCompatActivity {
 
     LocationManager mLocationManager;
     LocationListener mLocationListner;
+    TextView darling;
 
     RecyclerView weatherRecyclerView;
     WeatherAdapter weatherAdapter;
+    static ProgressBar progressBar;
 
+    GraphView graph;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +74,15 @@ public class Weather_world extends AppCompatActivity {
         final Button submit_btn = findViewById(R.id.submit_btn);
 
         weatherRecyclerView = findViewById(R.id.weather_recycler_view);
+        progressBar = findViewById(R.id.loading);
+        darling = findViewById(R.id.darling);
+
+        Paint paint = darling.getPaint();
+
+        Shader shader = paint.setShader(new LinearGradient(0, 0, darling.getPaint().measureText(darling.getText().toString()), darling.getTextSize(),
+                new int[]{Color.parseColor("#9BE6AD"), Color.parseColor("#039469")},
+                new float[]{0, 1}, Shader.TileMode.CLAMP));
+
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         weatherRecyclerView.setLayoutManager(layoutManager);
@@ -99,8 +119,37 @@ public class Weather_world extends AppCompatActivity {
 
         };
 
-        // Start scrolling every 1 second
         timer.schedule(timerTask, 0, 4000);
+
+
+        graph = findViewById(R.id.graph);
+
+        graph.getViewport().setXAxisBoundsManual(true);
+        graph.getViewport().setMinX(0);
+        graph.getViewport().setMaxX(40);
+
+        graph.getViewport().setYAxisBoundsManual(true);
+        graph.getViewport().setMinY(0);
+        graph.getViewport().setMaxY(100);
+        graph.getViewport().setScrollable(true);
+        graph.getViewport().setScalable(true);
+
+
+        graph.setTitle("Weather Data");
+        graph.setTitleColor(Color.BLACK);
+        graph.setTitleTextSize(24);
+        graph.getLegendRenderer().setVisible(true);
+        graph.getLegendRenderer().setTextColor(Color.BLACK);
+        graph.getLegendRenderer().setAlign(LegendRenderer.LegendAlign.TOP);
+
+        GridLabelRenderer gridLabel = graph.getGridLabelRenderer();
+        gridLabel.setHorizontalAxisTitleColor(Color.BLACK);
+        gridLabel.setVerticalAxisTitleColor(Color.BLACK);
+        gridLabel.setVerticalAxisTitle("Temperature (°C)");
+        gridLabel.setHorizontalAxisTitle("Time every 3h");
+        gridLabel.setGridColor(Color.parseColor("#ECECEC"));
+        gridLabel.setHighlightZeroLines(false);
+
 
     }
 
@@ -170,7 +219,7 @@ public class Weather_world extends AppCompatActivity {
 
                 Toast.makeText(Weather_world.this, "Data Get Success", Toast.LENGTH_SHORT).show();
 
-                Weather_5Days_forecast.fromJson(response, weatherAdapter);
+                Weather_5Days_forecast.fromJson(response, weatherAdapter,graph);
             }
 
             @Override

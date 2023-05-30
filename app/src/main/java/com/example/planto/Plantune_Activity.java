@@ -26,6 +26,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.MediaController;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -66,6 +67,8 @@ public class Plantune_Activity extends AppCompatActivity implements View.OnClick
     RecyclerView plantRecyclerView;
     PlantAdapter plantAdapter;
     TextView textView_no_result;
+    static ProgressBar progressBar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +80,7 @@ public class Plantune_Activity extends AppCompatActivity implements View.OnClick
         btnSubmit = findViewById(R.id.submit_btn);
         textView_no_result = findViewById(R.id.no_results_tv);
         filterSpinner = findViewById(R.id.filter_spinner);
+        progressBar = findViewById(R.id.loading);
 
         btnSubmit.setOnClickListener(this);
 
@@ -270,6 +274,8 @@ public class Plantune_Activity extends AppCompatActivity implements View.OnClick
                     // Add the plant to the list that will be displayed in the RecyclerView
                     plantList.add(new Plant(commonName, scientificName, imageUrl, sunlightString, Other_namesString, cycle, watering));
                     plantIds.add(plantId);
+                    plantRecyclerView.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
 
                     // Update the RecyclerView adapter with the new plant data
                     plantAdapter.setData(plantList, plantIds);
@@ -338,11 +344,14 @@ public class Plantune_Activity extends AppCompatActivity implements View.OnClick
                         // Add the plant to the list that will be displayed in the RecyclerView
                         plantList.add(new Plant(commonName, scientificName, imageUrl, sunlightString, Other_namesString, cycle, watering));
                         plantIds.add(plantId);
+                        plantRecyclerView.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.GONE);
                         plantAdapter.setData(plantList, plantIds);
                         plantAdapter.notifyDataSetChanged();
                     }
                     else
                     {
+                        plantRecyclerView.setVisibility(View.GONE);
                         textView_no_result.setText(plantName + " not found");                    }
                 }} catch (JSONException e) {
                 e.printStackTrace();

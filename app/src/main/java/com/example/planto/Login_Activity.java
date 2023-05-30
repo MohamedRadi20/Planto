@@ -52,10 +52,10 @@ public class Login_Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        email = (EditText) findViewById(R.id.email);
-        password = (EditText) findViewById(R.id.password);
-        error = (TextView) findViewById(R.id.error);
-        progressBar = (ProgressBar) findViewById(R.id.loading);
+        email = findViewById(R.id.email);
+        password = findViewById(R.id.password);
+        error = findViewById(R.id.error);
+        progressBar = findViewById(R.id.loading);
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         tv = findViewById(R.id.tv);
@@ -132,7 +132,7 @@ public class Login_Activity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 FirebaseUser user = mAuth.getCurrentUser();
-                createFirestoreUser(user.getDisplayName(), user.getEmail(), user.getPhotoUrl().toString(),user.getUid());
+                createFirestoreUser(user.getDisplayName(), user.getEmail(), user.getPhotoUrl().toString(), user.getUid());
                 Toast.makeText(getApplicationContext(), "Logged in successfully", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
@@ -182,8 +182,8 @@ public class Login_Activity extends AppCompatActivity {
         }
     }
 
-    void createFirestoreUser(String username , String email , String photoUrl,String id) {
-        db.collection("users").document(id).get().addOnCompleteListener(new OnCompleteListener< DocumentSnapshot >() {
+    void createFirestoreUser(String username, String email, String photoUrl, String id) {
+        db.collection("users").document(id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
