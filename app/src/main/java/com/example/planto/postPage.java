@@ -212,6 +212,10 @@ public class postPage extends AppCompatActivity {
     }
 
     private void addComment() {
+        if(comment_text.getText().toString().isEmpty()){
+            Toast.makeText(this, "Please enter a comment", Toast.LENGTH_SHORT).show();
+            return;
+        }
         Comment comment = new Comment(firebaseUser.getUid(), comment_text.getText().toString());
         comments.add(comment);
         updateCommentsInDatabaseAndUI();
