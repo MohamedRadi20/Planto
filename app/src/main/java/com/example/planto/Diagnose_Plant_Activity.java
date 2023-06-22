@@ -28,6 +28,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.planto.notes.NoteActivity;
+
 import org.tensorflow.lite.DataType;
 import org.tensorflow.lite.Interpreter;
 import org.tensorflow.lite.support.image.ImageProcessor;
@@ -354,6 +356,10 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
             case R.id.feedback:
                 Toast.makeText(getApplicationContext(), "Coming soon",
                         Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.note:
+                intent = new Intent(getApplicationContext(), NoteActivity.class);
+                startActivity(intent);
                 return true;
         }
         return super.onOptionsItemSelected(item);

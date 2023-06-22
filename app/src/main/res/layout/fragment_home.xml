@@ -245,12 +245,21 @@
         android:elevation="10dp"
         app:cardBackgroundColor="@android:color/transparent">
 
-        <ImageView
+<!--        <ImageView
             android:id="@+id/separate_seeds_service"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:onClick="separate_seeds_service"
-            android:src="@drawable/service3" />
+            android:src="@drawable/service3" />-->
+
+        <ImageView
+            android:id="@+id/separate_seeds_service"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:onClick="ThreeD_AR"
+            android:src="@drawable/service5"
+            tools:ignore="SpeakableTextPresentCheck" />
+
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView

@@ -24,6 +24,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.planto.notes.NoteActivity;
+
 import pl.droidsonroids.gif.GifImageView;
 
 public class Soil_Activity extends AppCompatActivity {
@@ -60,6 +62,10 @@ public class Soil_Activity extends AppCompatActivity {
             case R.id.feedback:
                 Toast.makeText(getApplicationContext(), "Coming soon",
                         Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.note:
+                intent = new Intent(getApplicationContext(), NoteActivity.class);
+                startActivity(intent);
                 return true;
         }
         return super.onOptionsItemSelected(item);

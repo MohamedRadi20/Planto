@@ -38,6 +38,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.planto.notes.NoteActivity;
 import com.example.planto.utils.NetworkUtils;
 
 import org.json.JSONArray;
@@ -369,6 +370,10 @@ public class Plantune_Activity extends AppCompatActivity implements View.OnClick
             case R.id.feedback:
                 Toast.makeText(getApplicationContext(), "Coming soon",
                         Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.note:
+                intent = new Intent(getApplicationContext(), NoteActivity.class);
+                startActivity(intent);
                 return true;
         }
         return super.onOptionsItemSelected(item);

@@ -19,6 +19,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.planto.notes.NoteActivity;
+
 public class Diagnose_Plant_Result_Activity extends AppCompatActivity {
     private ProgressBar progressBar;
     private TextView textViewProgress;
@@ -99,6 +101,10 @@ public class Diagnose_Plant_Result_Activity extends AppCompatActivity {
             case R.id.feedback:
                 Toast.makeText(getApplicationContext(), "Coming soon",
                         Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.note:
+                intent = new Intent(getApplicationContext(), NoteActivity.class);
+                startActivity(intent);
                 return true;
         }
         return super.onOptionsItemSelected(item);

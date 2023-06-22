@@ -19,6 +19,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.example.planto.notes.NoteActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -57,6 +58,12 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
+    public void ThreeD_AR(View view) {
+        Intent intent = new Intent(getApplicationContext(), Activity_3D.class);
+        startActivity(intent);
+        finish();
+    }
+
     public void Plantune_service(View view) {
         Intent intent = new Intent(getApplicationContext(), Plantune_Activity.class);
         startActivity(intent);
@@ -80,6 +87,10 @@ public class MainActivity extends AppCompatActivity {
             case R.id.feedback:
                 Toast.makeText(getApplicationContext(), "Coming soon",
                         Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.note:
+                Intent intent = new Intent(getApplicationContext(), NoteActivity.class);
+                startActivity(intent);
                 return true;
 
             default:

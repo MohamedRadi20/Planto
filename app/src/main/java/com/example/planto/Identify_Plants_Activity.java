@@ -23,6 +23,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.planto.notes.NoteActivity;
+
 import pl.droidsonroids.gif.GifImageView;
 
 public class Identify_Plants_Activity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -158,6 +160,10 @@ public class Identify_Plants_Activity extends AppCompatActivity implements Adapt
             case R.id.feedback:
                 Toast.makeText(getApplicationContext(), "Coming soon",
                         Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.note:
+                intent = new Intent(getApplicationContext(), NoteActivity.class);
+                startActivity(intent);
                 return true;
         }
         return super.onOptionsItemSelected(item);

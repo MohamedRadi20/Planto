@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activity_3D"
+    android:orientation="vertical"
+    >
+
+    <TextView
+        android:id="@+id/ThreeD_TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="26dp"
+        android:layout_marginEnd="26dp"
+        android:layout_marginTop="33dp"
+        android:fontFamily="@font/poppinsbold"
+        android:text=" 3D Augmented Reality"
+        android:textColor="@color/gradient_start_color"
+        android:textSize="26sp"
+        android:textStyle="bold"/>
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="383dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="90dp">
+
+        <ImageView
+            android:id="@+id/imgAnimation2"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:src="@drawable/circle" />
+
+        <ImageView
+            android:id="@+id/imgAnimation1"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:src="@drawable/circle" />
+
+        <Button
+            android:id="@+id/buttonAR"
+            style="@style/AppTheme.ButtonStyle"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:onClick="buttonAR"
+            android:text="@string/start"
+            android:textSize="20dp" />
+
+    </FrameLayout>
+
+
+</LinearLayout>

@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.planto.notes.NoteActivity;
 import com.example.planto.utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
@@ -479,6 +480,10 @@ public class Plant_Details extends AppCompatActivity {
             case R.id.feedback:
                 Toast.makeText(getApplicationContext(), "Coming soon",
                         Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.note:
+                intent = new Intent(getApplicationContext(), NoteActivity.class);
+                startActivity(intent);
                 return true;
         }
         return super.onOptionsItemSelected(item);
