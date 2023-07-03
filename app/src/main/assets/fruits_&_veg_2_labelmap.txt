@@ -1,0 +1,41 @@
+abricot
+apple
+avocado
+banana
+beet
+bell pepper
+bitter gourd
+broccoli
+cabbage
+carrot
+cauliflower
+corn
+cucumber
+custard apple
+durian
+eggplant
+fig
+garlic
+grape
+hot pepper
+kiwi
+lemon
+mango
+melon
+onion
+orange
+papaya
+peach
+pear
+persimmon
+pineapple
+plum
+pomegranate
+potato
+pumpkin
+radish
+strawberry
+tomato
+turnip
+watermelon
+zucchini

@@ -58,6 +58,7 @@
         <item>Ornamentals</item>
         <item>Flowers</item>
         <item>Pests</item>
+        <item>Rotten</item>
     </string-array>
 
     <!-- Plant Disease Classes -->

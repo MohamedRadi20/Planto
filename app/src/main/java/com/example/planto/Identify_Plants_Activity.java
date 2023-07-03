@@ -57,12 +57,7 @@ public class Identify_Plants_Activity extends AppCompatActivity implements Adapt
 
         pref = getApplicationContext().getSharedPreferences("the_ssd_models", MODE_PRIVATE);
 
-        ar_camera_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), Camera_Activity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP));
-            }
-        });
+        ar_camera_button.setOnClickListener(v -> startActivity(new Intent(getApplicationContext(), Camera_Activity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP)));
 
         animation_left = AnimationUtils.loadAnimation(this, R.anim.left);
         animation_right = AnimationUtils.loadAnimation(this, R.anim.right);
@@ -71,7 +66,6 @@ public class Identify_Plants_Activity extends AppCompatActivity implements Adapt
         textView2.setAnimation(animation_left);
 
         startPulse();
-
     }
 
     private void startPulse() {
@@ -116,6 +110,7 @@ public class Identify_Plants_Activity extends AppCompatActivity implements Adapt
             editor.putBoolean("isOrnamentals", false);
             editor.putBoolean("isFlowers", false);
             editor.putBoolean("isPests", false);
+            editor.putBoolean("isRotten", false);
             editor.commit();
             Toast.makeText(parent.getContext(), text, Toast.LENGTH_SHORT).show();
         } else if (text.equals("Ornamentals")) {
@@ -124,6 +119,7 @@ public class Identify_Plants_Activity extends AppCompatActivity implements Adapt
             editor.putBoolean("isOrnamentals", true);
             editor.putBoolean("isFlowers", false);
             editor.putBoolean("isPests", false);
+            editor.putBoolean("isRotten", false);
             editor.commit();
             Toast.makeText(parent.getContext(), text + " fuck", Toast.LENGTH_SHORT).show();
         } else if (text.equals("Flowers")) {
@@ -132,6 +128,7 @@ public class Identify_Plants_Activity extends AppCompatActivity implements Adapt
             editor.putBoolean("isOrnamentals", false);
             editor.putBoolean("isFlowers", true);
             editor.putBoolean("isPests", false);
+            editor.putBoolean("isRotten", false);
             editor.commit();
             Toast.makeText(parent.getContext(), text + " fuck", Toast.LENGTH_SHORT).show();
         } else if (text.equals("Pests")) {
@@ -140,6 +137,17 @@ public class Identify_Plants_Activity extends AppCompatActivity implements Adapt
             editor.putBoolean("isOrnamentals", false);
             editor.putBoolean("isFlowers", false);
             editor.putBoolean("isPests", true);
+            editor.putBoolean("isRotten", false);
+            editor.commit();
+            Toast.makeText(parent.getContext(), text + " fuck", Toast.LENGTH_SHORT).show();
+        }
+        else if (text.equals("Rotten")) {
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putBoolean("isFruits", false);
+            editor.putBoolean("isOrnamentals", false);
+            editor.putBoolean("isFlowers", false);
+            editor.putBoolean("isPests", false);
+            editor.putBoolean("isRotten", true);
             editor.commit();
             Toast.makeText(parent.getContext(), text + " fuck", Toast.LENGTH_SHORT).show();
         }

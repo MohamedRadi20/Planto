@@ -33,7 +33,7 @@ public class Camera_Activity extends Activity implements CameraBridgeViewBase.Cv
     SharedPreferences pref;
     String model_name;
     String label_name;
-    Boolean isFruits, isOrnamentals, isFlowers, isPests;
+    Boolean isFruits, isOrnamentals, isFlowers, isPests, isRotten;
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
@@ -81,25 +81,31 @@ public class Camera_Activity extends Activity implements CameraBridgeViewBase.Cv
             isOrnamentals = pref.getBoolean("isOrnamentals", false);
             isFlowers = pref.getBoolean("isFlowers", false);
             isPests = pref.getBoolean("isPests", false);
+            isRotten = pref.getBoolean("isRotten", false);
+
 
 
             //TODO train a custom ssd_model for each category
 
             if (isFruits) {
-                model_name = "detect_fruits.tflite";
-                label_name = "fruits_labelmap.txt";
+                model_name = "detect_fruits_&_veg_2.tflite";
+                label_name = "fruits_&_veg_2_labelmap.txt";
 
             } else if (isOrnamentals) {
                 model_name = "detect_ornamentals.tflite";
                 label_name = "ornamentals_label_map.txt";
 
             } else if (isFlowers) {
-                model_name = "detect_ornamentals.tflite";
-                label_name = "ornamentals_label_map.txt";
+                model_name = "detect_flowers.tflite";
+                label_name = "flowers_labelmap.txt";
 
             } else if (isPests) {
-                model_name = "detect_ornamentals.tflite";
-                label_name = "ornamentals_label_map.txt";
+                model_name = "detect_rotten.tflite";
+                label_name = "rotten_labelmap.txt";
+
+            } else if (isRotten) {
+                model_name = "detect_rotten.tflite";
+                label_name = "rotten_labelmap.txt";
             }
 
             objectDetectorClass = new object_Detector_Class(getAssets(), model_name, label_name, 320);

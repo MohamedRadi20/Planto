@@ -47,37 +47,37 @@ public class Weather_5Days_forecast {
 
             series_temperature.setColor(Color.rgb(255, 0, 0));
             series_temperature.setDataPointsRadius(12);
-            series_temperature.setThickness(6);
-            series_temperature.setDrawDataPoints(true);
+            series_temperature.setThickness(5);
+            series_temperature.setDrawDataPoints(false);
             series_temperature.setAnimated(true);
             series_temperature.setDrawAsPath(false);
 
             series_humidity.setColor(Color.rgb(0, 0, 255));
             series_humidity.setDataPointsRadius(12);
-            series_humidity.setThickness(6);
-            series_humidity.setDrawDataPoints(true);
+            series_humidity.setThickness(5);
+            series_humidity.setDrawDataPoints(false);
             series_humidity.setAnimated(true);
             series_humidity.setDrawAsPath(false);
 
             series_pressure.setColor(Color.rgb(0, 255, 0));
             series_pressure.setDataPointsRadius(12);
-            series_pressure.setThickness(6);
-            series_pressure.setDrawDataPoints(true);
+            series_pressure.setThickness(5);
+            series_pressure.setDrawDataPoints(false);
             series_pressure.setAnimated(true);
             series_pressure.setDrawAsPath(false);
 
             series_rain.setColor(Color.rgb(0, 191, 255));
             series_rain.setDataPointsRadius(12);
-            series_rain.setThickness(6);
-            series_rain.setDrawDataPoints(true);
+            series_rain.setThickness(5);
+            series_rain.setDrawDataPoints(false);
             series_rain.setAnimated(true);
             series_rain.setDrawAsPath(false);
 
             series_mWindSpeed.setColor(Color.rgb(255, 215, 0));
-            series_mWindSpeed.setDataPointsRadius(12);
-            series_mWindSpeed.setThickness(6);
-            series_mWindSpeed.setDrawDataPoints(true);
-            series_mWindSpeed.setAnimated(true);
+            series_mWindSpeed.setDataPointsRadius(10);
+            series_mWindSpeed.setThickness(5);
+            series_mWindSpeed.setDrawDataPoints(false);
+            series_mWindSpeed.setAnimated(false);
             series_mWindSpeed.setDrawAsPath(false);
 
 

@@ -46,6 +46,10 @@ public class CustomSpinnerAdapter extends ArrayAdapter<CharSequence> {
                 imageView.setImageResource(R.drawable.pests_icon);
                 textView.setText(mItems[position]);
                 break;
+            case 4:
+                imageView.setImageResource(R.drawable.rotten_icon);
+                textView.setText(mItems[position]);
+                break;
         }
 
         return convertView;

@@ -15,6 +15,7 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,7 +54,8 @@ public class Home_Fragment extends Fragment {
 
     LocationManager mLocationManager;
     LocationListener mLocationListner;
-    CardView card_view_1, card_view_2, card_view_3, card_view_4, mCityFinder;
+    CardView card_view_1, card_view_2, card_view_3, card_view_4;
+    LinearLayout mCityFinder;
     TextView name;
 
 

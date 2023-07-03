@@ -125,18 +125,18 @@ public class MainActivity extends AppCompatActivity {
 
     protected void onStart() {
         super.onStart();
-        Log.e("bla",restorePrefData()+"");
-        if (restorePrefData() == false) {
-            Intent mainActivity = new Intent(getApplicationContext(),Intro_Activity.class );
-            startActivity(mainActivity);
-            finish();
-        }
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user == null) {
-            Intent intent = new Intent(getApplicationContext(),Login_Activity.class);
-            startActivity(intent);
-            finish();
-        }
+//        Log.e("bla",restorePrefData()+"");
+//        if (restorePrefData() == false) {
+//            Intent mainActivity = new Intent(getApplicationContext(),Intro_Activity.class );
+//            startActivity(mainActivity);
+//            finish();
+//        }
+//        FirebaseUser user = mAuth.getCurrentUser();
+//        if (user == null) {
+//            Intent intent = new Intent(getApplicationContext(),Login_Activity.class);
+//            startActivity(intent);
+//            finish();
+//        }
     }
 
     private boolean restorePrefData() {

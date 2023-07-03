@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -50,10 +50,9 @@
             android:layout_marginStart="130dp"
             android:src="@drawable/user" />
 
-
     </LinearLayout>
 
-    <androidx.cardview.widget.CardView
+    <LinearLayout
         android:id="@+id/cityFinder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -61,140 +60,133 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="3dp"
         android:layout_marginEnd="20dp"
+        android:orientation="horizontal"
         android:padding="10dp">
+
+        <ImageView
+            android:id="@+id/weatherIcon"
+            android:layout_width="93dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
+            android:src="@drawable/sunny" />
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:orientation="horizontal"
-            android:padding="10dp">
-
-            <ImageView
-                android:id="@+id/weatherIcon"
-                android:layout_width="93dp"
-                android:layout_height="70dp"
-                android:layout_gravity="center"
-                android:src="@drawable/sunny" />
-
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:orientation="vertical">
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/temperature"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppinsbold"
+                    android:paddingStart="19dp"
+                    android:text="72°F"
+                    android:textSize="30sp"
+                    android:textStyle="bold">
+
+                </TextView>
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="19dp"
+                    android:src="@drawable/separating_line" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/temperature"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppinsbold"
-                        android:paddingStart="19dp"
-                        android:text="72°F"
-                        android:textSize="30sp"
-                        android:textStyle="bold">
-
-                    </TextView>
-
-                    <ImageView
-                        android:layout_width="10dp"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center"
-                        android:layout_marginStart="19dp"
-                        android:src="@drawable/separating_line" />
+                    android:orientation="vertical">
 
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:orientation="vertical">
+                        android:orientation="horizontal"
+                        android:paddingStart="5dp">
 
-                        <LinearLayout
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/humidity_icon" />
+
+                        <TextView
+                            android:id="@+id/humidity"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:paddingStart="5dp">
+                            android:fontFamily="@font/poppinsbold"
+                            android:paddingStart="5dp"
+                            android:text="Humidity: 50%"
+                            android:textSize="12sp"
+                            android:textStyle="bold">
 
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:src="@drawable/humidity_icon" />
-
-                            <TextView
-                                android:id="@+id/humidity"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/poppinsbold"
-                                android:paddingStart="5dp"
-                                android:text="Humidity: 50%"
-                                android:textSize="12sp"
-                                android:textStyle="bold">
-
-                            </TextView>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:paddingStart="5dp">
-
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:src="@drawable/wind_icon" />
-
-                            <TextView
-                                android:id="@+id/wind_speed"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/poppinsbold"
-                                android:paddingStart="5dp"
-                                android:text="Wind: 10 mph"
-                                android:textSize="12sp"></TextView>
-
-                        </LinearLayout>
+                        </TextView>
 
                     </LinearLayout>
 
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingStart="5dp">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/wind_icon" />
+
+                        <TextView
+                            android:id="@+id/wind_speed"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppinsbold"
+                            android:paddingStart="5dp"
+                            android:text="Wind: 10 mph"
+                            android:textSize="12sp"></TextView>
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
 
-                <TextView
-                    android:id="@+id/weatherCondition"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppinsbold"
-                    android:paddingStart="19dp"
-                    android:text="Sunny"
-                    android:textSize="12sp">
-
-                </TextView>
-
-                <TextView
-                    android:id="@+id/cityName"
-                    android:layout_width="191dp"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppinsbold"
-                    android:paddingStart="19dp"
-                    android:text="New York"
-                    android:textSize="16sp"
-                    android:textStyle="bold">
-
-                </TextView>
-
             </LinearLayout>
 
+
+            <TextView
+                android:id="@+id/weatherCondition"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppinsbold"
+                android:paddingStart="19dp"
+                android:text="Sunny"
+                android:textSize="12sp">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/cityName"
+                android:layout_width="191dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppinsbold"
+                android:paddingStart="19dp"
+                android:text="New York"
+                android:textSize="16sp"
+                android:textStyle="bold">
+
+            </TextView>
+
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_view_1"
