@@ -100,8 +100,8 @@ public class Camera_Activity extends Activity implements CameraBridgeViewBase.Cv
                 label_name = "flowers_labelmap.txt";
 
             } else if (isPests) {
-                model_name = "detect_rotten.tflite";
-                label_name = "rotten_labelmap.txt";
+                model_name = "detect_pests.tflite";
+                label_name = "pests_labelmap.txt";
 
             } else if (isRotten) {
                 model_name = "detect_rotten.tflite";

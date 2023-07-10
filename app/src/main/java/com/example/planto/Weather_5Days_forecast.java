@@ -80,6 +80,8 @@ public class Weather_5Days_forecast {
             series_mWindSpeed.setAnimated(false);
             series_mWindSpeed.setDrawAsPath(false);
 
+            // i forgot to put this line .. my bad lol
+            graph.removeAllSeries();
 
             graph.addSeries(series_temperature);
             graph.addSeries(series_humidity);
@@ -123,13 +125,12 @@ public class Weather_5Days_forecast {
                 series_humidity.appendData(new DataPoint(i, mHumidity), true,listArray.length());
                 series_pressure.appendData(new DataPoint(i, mapValue(mPressure,0,2000,0,100)), true,listArray.length());
                 series_rain.appendData(new DataPoint(i, mapValue(mRain,0,10,0,100)), true,listArray.length());
-                series_mWindSpeed.appendData(new DataPoint(i, mapValue(mWindSpeed,0,10,0,100)), true,listArray.length());
+                series_mWindSpeed.appendData(new DataPoint(i, (double)mWindSpeed), true,listArray.length());
 
                 Weather_world.progressBar.setVisibility(View.GONE);
                 graph.setVisibility(View.VISIBLE);
 
                 weatherList.add(new Weather(mCity, mCountry, mWeatherDescription, mIconUrl, mDtTxt, mTemperature, mPressure, mHumidity, mWindSpeed, mRain, mLatitude, mLongitude));
-
                 weatherAdapter.setData(weatherList);
 
             }

@@ -61,6 +61,11 @@
         <item>Rotten</item>
     </string-array>
 
+
+
+
+
+
     <!-- Plant Disease Classes -->
     <string-array name="plant_disease_classes">
         <item>Apple__black_rot</item>

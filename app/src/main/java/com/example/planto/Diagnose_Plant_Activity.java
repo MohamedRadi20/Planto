@@ -11,6 +11,7 @@ import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.util.Pair;
 import android.view.Menu;
@@ -56,7 +57,7 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
     TensorImage tensorImage;
     Interpreter interpreter;
 
-    int image_size_for_the_model = 256;
+    int image_size_for_the_model = 224;
     String First_Result = "", Second_Result = "", modelPath = "model.tflite";
     String[] classes;
     int maxIndex, secondMaxIndex;
@@ -253,6 +254,8 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (resultCode == RESULT_OK) {
             if (requestCode == 3) {
+                long inferenceTime = SystemClock.uptimeMillis();
+
                 Bitmap image = (Bitmap) data.getExtras().get("data");
                 int dimension = Math.min(image.getWidth(), image.getHeight());
                 image = ThumbnailUtils.extractThumbnail(image, dimension, dimension);
@@ -287,15 +290,20 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
                 image.compress(Bitmap.CompressFormat.PNG, 100, stream);
                 byte[] byteArray = stream.toByteArray();
 
+                inferenceTime = SystemClock.uptimeMillis() - inferenceTime;
+
                 Intent intent = new Intent(getApplicationContext(), Diagnose_Plant_Result_Activity.class);
                 intent.putExtra("Diagnose_First_Resut", First_Result);
                 intent.putExtra("Diagnose_Second_Resut", Second_Result);
                 intent.putExtra("maxConfidence", maxConfidence);
                 intent.putExtra("secondMaxConfidence", secondMaxConfidence);
                 intent.putExtra("image", byteArray);
+                intent.putExtra("inferenceTime", inferenceTime);
                 startActivity(intent);
 
             } else {
+                long inferenceTime = SystemClock.uptimeMillis();
+
                 Uri dat = data.getData();
                 Bitmap image = null;
                 try {
@@ -333,12 +341,15 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
                 image.compress(Bitmap.CompressFormat.PNG, 100, stream);
                 byte[] byteArray = stream.toByteArray();
 
+                inferenceTime = SystemClock.uptimeMillis() - inferenceTime;
+
                 Intent intent = new Intent(getApplicationContext(), Diagnose_Plant_Result_Activity.class);
                 intent.putExtra("Diagnose_First_Resut", First_Result);
                 intent.putExtra("Diagnose_Second_Resut", Second_Result);
                 intent.putExtra("maxConfidence", maxConfidence);
                 intent.putExtra("secondMaxConfidence", secondMaxConfidence);
                 intent.putExtra("image", byteArray);
+                intent.putExtra("inferenceTime", inferenceTime);
                 startActivity(intent);
 
             }

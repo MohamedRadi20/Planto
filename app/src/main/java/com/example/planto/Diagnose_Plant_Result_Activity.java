@@ -50,6 +50,7 @@ public class Diagnose_Plant_Result_Activity extends AppCompatActivity {
         String diagnose_second_result = getIntent().getStringExtra("Diagnose_Second_Resut");
         float maxConfidence = getIntent().getFloatExtra("maxConfidence",0);
         float secondMaxConfidence = getIntent().getFloatExtra("secondMaxConfidence",0);
+        long inferenceTime = getIntent().getLongExtra("inferenceTime",0);
 
 
         maxConfidence = maxConfidence * 100;
@@ -65,6 +66,8 @@ public class Diagnose_Plant_Result_Activity extends AppCompatActivity {
         animator.setDuration(2000);
         animator.start();
 
+        double inferenceTime_seconds = (double) inferenceTime/1000.0;
+
         textViewProgress.setText(formattedMaxConfidence + "%");
 
         String resourceName = diagnose_first_result ;
@@ -75,6 +78,7 @@ public class Diagnose_Plant_Result_Activity extends AppCompatActivity {
 
         accumulation_of_the_result += String.format("%s: \n",diagnose_first_result);
         accumulation_of_the_result += String.format("%s:  %.1f%%",diagnose_second_result, secondMaxConfidence);
+        accumulation_of_the_result += "\n inferenceTime_seconds: " + inferenceTime_seconds;
 
             if(diagnose_first_result != ""){
                 textView_result.setText(accumulation_of_the_result);

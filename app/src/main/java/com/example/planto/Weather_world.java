@@ -145,7 +145,7 @@ public class Weather_world extends AppCompatActivity {
         GridLabelRenderer gridLabel = graph.getGridLabelRenderer();
         gridLabel.setHorizontalAxisTitleColor(Color.BLACK);
         gridLabel.setVerticalAxisTitleColor(Color.BLACK);
-        gridLabel.setVerticalAxisTitle("Temperature (°C)");
+        gridLabel.setVerticalAxisTitle("Values (enjoy the pattern :)");
         gridLabel.setHorizontalAxisTitle("Time every 3h");
         gridLabel.setGridColor(Color.parseColor("#ECECEC"));
         gridLabel.setHighlightZeroLines(false);

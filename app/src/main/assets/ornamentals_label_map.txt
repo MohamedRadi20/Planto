@@ -1,14 +1,53 @@
-Clusia
-Fan-Palms
-Lvicks plant
+Adenium
+Aglaonema
+Alocasia
+Aloevera
+Amaryllis
+Araucaria heterophylla
+Bamboo
+BegoniaRex
+BostonFern
+BunnyEarCactus
+Chinese Money
+ChineseMoneyPlant
+Chlorophytum comosum
+CrassulaPortulaca
+Croton
+Dieffenbachia
+Echeveria
+Epipremnum
+Euphorbiamilii
+FatsiaJaponica
+FicusElastica
+Ficusbenjamina
+Fiddle-leaf
+Hedera Helix
+Hypoestesphyllostachya
+Jade plant
+Kalanchoe
+Kalanchoesect Bryophyllum
+Maidenhair fern
+Mesembryanthemum cordifolium
+Monstera deliciosa
 Pachira
-Wind orchid
-caladium
-carnation
-creeping fig
-croton
-eucalyptus
-freesia
-geranium
-poinsettia
-ribbon plant
+Pachypodiumlamerei
+Pedilanthus
+Pelargonium graveolens
+Pelargonium hortorum
+Pelargonium xdomesticum
+Peperomia caperata
+Philodendron Hope Selloum
+Poinsettia
+PonytailPalm
+Schefflera
+Solenostemon
+Spathiphyllum
+Syngonium
+Tradescantia fluminensis
+WaxBegonia
+White orchids
+Zanzibar Gem
+Zebra haworthia
+anthurium
+snake plant
+verbena
