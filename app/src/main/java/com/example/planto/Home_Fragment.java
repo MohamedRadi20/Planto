@@ -27,9 +27,16 @@ import androidx.fragment.app.Fragment;
 import cz.msebera.android.httpclient.Header;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
@@ -44,19 +51,20 @@ public class Home_Fragment extends Fragment {
     final long MIN_TIME = 5000;
     final float MIN_DISTANCE = 1000;
     final int REQUEST_CODE = 101;
-
+    FirebaseFirestore db;
+    FirebaseUser firebaseUser;
+    User user;
     String Location_Provider = LocationManager.GPS_PROVIDER;
     Animation left, right, fade_in;
 
-    TextView NameofCity, weatherState, Temperature, wind_speed, humidity;
-    ImageView mweatherIcon;
+    TextView NameofCity, weatherState, Temperature, wind_speed, humidity, name;
+    ImageView mweatherIcon, user_image;
 
 
     LocationManager mLocationManager;
     LocationListener mLocationListner;
     CardView card_view_1, card_view_2, card_view_3, card_view_4;
     LinearLayout mCityFinder;
-    TextView name;
 
 
     @Override
@@ -69,7 +77,8 @@ public class Home_Fragment extends Fragment {
 
     public void onStart() {
         super.onStart();
-
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        db = FirebaseFirestore.getInstance();
         card_view_1 = getActivity().findViewById(R.id.card_view_1);
         card_view_2 = getActivity().findViewById(R.id.card_view_2);
         card_view_3 = getActivity().findViewById(R.id.card_view_3);
@@ -82,6 +91,8 @@ public class Home_Fragment extends Fragment {
         NameofCity = getActivity().findViewById(R.id.cityName);
         wind_speed = getActivity().findViewById(R.id.wind_speed);
         humidity = getActivity().findViewById(R.id.humidity);
+        name = getActivity().findViewById(R.id.name);
+        user_image = getActivity().findViewById(R.id.user_image);
 
         left = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.left);
         right = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.right);
@@ -107,7 +118,7 @@ public class Home_Fragment extends Fragment {
             Intent intent = new Intent(getActivity().getApplicationContext(), Weather_world.class);
             startActivity(intent);
         });
-
+        getUserData();
     }
 
 
@@ -230,6 +241,29 @@ public class Home_Fragment extends Fragment {
         humidity.setText(weather.humidity());
 
 
+    }
+
+    private void getUserData() {
+        db.collection("users").document(firebaseUser.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(com.google.firebase.firestore.DocumentSnapshot documentSnapshot) {
+                user = documentSnapshot.toObject(User.class);
+                if (user != null) {
+                    name.setText(getFirstName(user.getUsername()));
+                    Picasso.get().load(user.getAvatar_url()).into(user_image);
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getActivity().getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private String getFirstName(String name) {
+        String[] names = name.split(" ");
+        return names[0];
     }
 
     @Override
