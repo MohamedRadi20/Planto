@@ -7,12 +7,14 @@ import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,11 +40,16 @@ import org.tensorflow.lite.support.image.TensorImage;
 import org.tensorflow.lite.support.image.ops.ResizeWithCropOrPadOp;
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Diagnose_Plant_Activity extends AppCompatActivity {
     private final int GALLERY_RQ_CODE = 1000;
@@ -53,38 +60,19 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
     Animation animation_left, animation_right, fade_in;
     TextView diagnose_plant_activity_title_textView, diagnose_plant_activity_entry_textView;
 
-    AssetManager assetManager;
-    TensorImage tensorImage;
     Interpreter interpreter;
 
-    int image_size_for_the_model = 224;
-    String First_Result = "", Second_Result = "", modelPath = "model.tflite";
-    String[] classes;
-    int maxIndex, secondMaxIndex;
-    float maxConfidence = 0, secondMaxConfidence = 0;
-    float[] results;
+    private static final int PICK_IMAGE_REQUEST = 1;
+    private int inputShape[];
+    private DataType inputDataType, outputDataType;
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_diagnose_plant);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         upload_button = findViewById(R.id.upload);
 
-        classes = getResources().getStringArray(R.array.plant_disease_classes);
-
-        // I wanna check the damn size here
-        try {
-            assetManager = getAssets();
-
-            interpreter = loadModel(assetManager, modelPath);
-
-            checkModelInputOutputShapes(interpreter);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         if (ContextCompat.checkSelfPermission(Diagnose_Plant_Activity.this,
                 Manifest.permission.READ_CONTACTS)
@@ -124,105 +112,47 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
             startActivityForResult(intent, 3);
         });
 
+
     }
 
-    class Prediction {
-        float confidence;
-        int index;
 
-        public Prediction(float confidence, int index) {
-            this.confidence = confidence;
-            this.index = index;
+    private MappedByteBuffer loadModelFile() throws IOException {
+        AssetFileDescriptor assetFileDescriptor = getAssets().openFd("model.tflite");
+        FileInputStream inputStream = new FileInputStream(assetFileDescriptor.getFileDescriptor());
+        FileChannel fileChannel = inputStream.getChannel();
+        long startOffset = assetFileDescriptor.getStartOffset();
+        long declaredLength = assetFileDescriptor.getDeclaredLength();
+        return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength);
+    }
+
+    private float[][][][] preprocess(Bitmap imageBitmap) {
+        // Resize the image
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, inputShape[2], inputShape[1], true);
+
+        // Convert the bitmap to a float array
+        int[] intValues = new int[inputShape[1] * inputShape[2]];
+        float[][][][] floatValues = new float[1][inputShape[1]][inputShape[2]][3];
+        resizedBitmap.getPixels(intValues, 0, inputShape[2], 0, 0, inputShape[2], inputShape[1]);
+        for (int i = 0; i < intValues.length; ++i) {
+            final int val = intValues[i];
+            floatValues[0][i / inputShape[2]][i % inputShape[2]][0] = ((val >> 16) & 0xFF) / 255.0f;
+            floatValues[0][i / inputShape[2]][i % inputShape[2]][1] = ((val >> 8) & 0xFF) / 255.0f;
+            floatValues[0][i / inputShape[2]][i % inputShape[2]][2] = (val & 0xFF) / 255.0f;
         }
+
+        return floatValues;
     }
 
-    private Pair<Prediction, Prediction> argmaxAndSecondMax(float[] array) {
+    private int argmax(float[] array) {
         int maxIndex = 0;
-        int secondMaxIndex = 0;
-        float maxValue = array[0];
-        float secondMaxValue = Float.MIN_VALUE;
-        for (int i = 1; i < array.length; i++) {
-            if (array[i] > maxValue) {
-                secondMaxValue = maxValue;
-                secondMaxIndex = maxIndex;
-                maxValue = array[i];
-                maxIndex = i;
-            } else if (array[i] > secondMaxValue) {
-                secondMaxValue = array[i];
-                secondMaxIndex = i;
-            }
-        }
-        Prediction maxPrediction = new Prediction(maxValue, maxIndex);
-        Prediction secondMaxPrediction = new Prediction(secondMaxValue, secondMaxIndex);
-        return new Pair<>(maxPrediction, secondMaxPrediction);
-    }
-
-    private Interpreter loadModel(AssetManager assetManager, String modelPath) throws IOException {
-        AssetFileDescriptor fileDescriptor = assetManager.openFd(modelPath);
-        FileInputStream fileInputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
-        FileChannel fileChannel = fileInputStream.getChannel();
-        long startOffset = fileDescriptor.getStartOffset();
-        long declaredLength = fileDescriptor.getDeclaredLength();
-        MappedByteBuffer modelBuffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength);
-        return new Interpreter(modelBuffer);
-    }
-
-    private void checkModelInputOutputShapes(Interpreter interpreter) {
-        int inputTensorCount = interpreter.getInputTensorCount();
-        int outputTensorCount = interpreter.getOutputTensorCount();
-
-        for (int i = 0; i < inputTensorCount; i++) {
-            int[] inputShape = interpreter.getInputTensor(i).shape();
-            String inputShapeString = arrayToString(inputShape);
-            System.out.println("Input Tensor " + i + " shape: " + inputShapeString);
-        }
-
-        for (int i = 0; i < outputTensorCount; i++) {
-            int[] outputShape = interpreter.getOutputTensor(i).shape();
-            String outputShapeString = arrayToString(outputShape);
-            System.out.println("Output Tensor " + i + " shape: " + outputShapeString);
-        }
-    }
-
-    private String arrayToString(int[] array) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("[");
+        float maxVal = -Float.MAX_VALUE;
         for (int i = 0; i < array.length; i++) {
-            builder.append(array[i]);
-            if (i < array.length - 1) {
-                builder.append(", ");
+            if (array[i] > maxVal) {
+                maxVal = array[i];
+                maxIndex = i;
             }
         }
-        builder.append("]");
-        return builder.toString();
-    }
-
-    private TensorImage preprocessImage(Bitmap image, int inputImageSize) {
-        ImageProcessor imageProcessor = new ImageProcessor.Builder()
-                .add(new ResizeWithCropOrPadOp(inputImageSize, inputImageSize))
-                .build();
-        TensorImage tensorImage = new TensorImage(DataType.FLOAT32);
-        tensorImage.load(image);
-        tensorImage = imageProcessor.process(tensorImage);
-        return tensorImage;
-    }
-
-    private float[] performInference(Interpreter interpreter, TensorImage inputImage) {
-        int inputTensorIndex = 0;
-        int outputTensorIndex = 0;
-
-        int[] inputShape = interpreter.getInputTensor(inputTensorIndex).shape();
-        int[] outputShape = interpreter.getOutputTensor(outputTensorIndex).shape();
-
-        TensorBuffer inputBuffer = TensorBuffer.createFixedSize(inputShape, DataType.FLOAT32);
-        TensorBuffer outputBuffer = TensorBuffer.createFixedSize(outputShape, DataType.FLOAT32);
-
-        inputBuffer.loadBuffer(inputImage.getBuffer());
-
-        interpreter.run(inputBuffer.getBuffer(), outputBuffer.getBuffer());
-
-        float[] results = outputBuffer.getFloatArray();
-        return results;
+        return maxIndex;
     }
 
     private void startPulse() {
@@ -257,34 +187,49 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
                 long inferenceTime = SystemClock.uptimeMillis();
 
                 Bitmap image = (Bitmap) data.getExtras().get("data");
-                int dimension = Math.min(image.getWidth(), image.getHeight());
-                image = ThumbnailUtils.extractThumbnail(image, dimension, dimension);
 
-                image = Bitmap.createScaledBitmap(image, image_size_for_the_model, image_size_for_the_model, false);
-
+                // Load model
                 try {
-                    interpreter = loadModel(assetManager, modelPath);
+                    interpreter = new Interpreter(loadModelFile(), new Interpreter.Options());
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Log.e("TAG", "Failed to load model", e);
                 }
 
-                tensorImage = preprocessImage(image, image_size_for_the_model);
+                // Get input and output details
+                inputShape = interpreter.getInputTensor(0).shape();
+                inputDataType = interpreter.getInputTensor(0).dataType();
+                outputDataType = interpreter.getOutputTensor(0).dataType();
 
-                results = performInference(interpreter, tensorImage);
+                // Create a list of class names
+                // Load the class names from the raw resource
+                String[] classNames = null;
+                try {
+                    InputStream inputStream = getResources().openRawResource(R.raw.class_names);
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                    List<String> lines = new ArrayList<>();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        lines.add(line);
+                    }
+                    classNames = lines.toArray(new String[0]);
+                } catch (IOException e) {
+                    Log.e("TAG", "Failed to load class names", e);
+                }
+                // Load the image from the drawable resource
 
-                Pair<Prediction, Prediction> predictions = argmaxAndSecondMax(results);
+                // Preprocess the image
+                float[][][][] inputArray = preprocess(image);
 
-                Prediction maxPrediction = predictions.first;
-                Prediction secondMaxPrediction = predictions.second;
+                // Invoke the interpreter to predict the image
+                float[][] outputArray = new float[1][89];
+                interpreter.run(inputArray, outputArray);
 
-                maxConfidence = maxPrediction.confidence;
-                maxIndex = maxPrediction.index;
+                // Get the predicted class index and probability
+                int classIndex = argmax(outputArray[0]);
+                String className = classNames[classIndex];
+                float probability = outputArray[0][classIndex];
+                Log.e("TAG", "Class name: " + className + ", Probability: " + probability);
 
-                secondMaxConfidence = secondMaxPrediction.confidence;
-                secondMaxIndex = secondMaxPrediction.index;
-
-                First_Result = classes[maxIndex];
-                Second_Result = classes[secondMaxIndex];
 
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 image.compress(Bitmap.CompressFormat.PNG, 100, stream);
@@ -293,12 +238,11 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
                 inferenceTime = SystemClock.uptimeMillis() - inferenceTime;
 
                 Intent intent = new Intent(getApplicationContext(), Diagnose_Plant_Result_Activity.class);
-                intent.putExtra("Diagnose_First_Resut", First_Result);
-                intent.putExtra("Diagnose_Second_Resut", Second_Result);
-                intent.putExtra("maxConfidence", maxConfidence);
-                intent.putExtra("secondMaxConfidence", secondMaxConfidence);
+                intent.putExtra("Diagnose_First_Resut", className);
+                intent.putExtra("maxConfidence", probability);
                 intent.putExtra("image", byteArray);
                 intent.putExtra("inferenceTime", inferenceTime);
+                Log.e("TAG","fuck final");
                 startActivity(intent);
 
             } else {
@@ -311,31 +255,49 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                image = Bitmap.createScaledBitmap(image, image_size_for_the_model, image_size_for_the_model, false);
-
+                // Load model
                 try {
-                    interpreter = loadModel(assetManager, modelPath);
+                    interpreter = new Interpreter(loadModelFile(), new Interpreter.Options());
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Log.e("TAG", "Failed to load model", e);
                 }
 
-                tensorImage = preprocessImage(image, image_size_for_the_model);
+                // Get input and output details
+                inputShape = interpreter.getInputTensor(0).shape();
+                inputDataType = interpreter.getInputTensor(0).dataType();
+                outputDataType = interpreter.getOutputTensor(0).dataType();
 
-                results = performInference(interpreter, tensorImage);
+                // Create a list of class names
+                // Load the class names from the raw resource
+                String[] classNames = null;
+                try {
+                    InputStream inputStream = getResources().openRawResource(R.raw.class_names);
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                    List<String> lines = new ArrayList<>();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        lines.add(line);
+                    }
+                    classNames = lines.toArray(new String[0]);
+                } catch (IOException e) {
+                    Log.e("TAG", "Failed to load class names", e);
+                }
+                // Load the image from the drawable resource
 
-                Pair<Prediction, Prediction> predictions = argmaxAndSecondMax(results);
+                // Preprocess the image
+                float[][][][] inputArray = preprocess(image);
 
-                Prediction maxPrediction = predictions.first;
-                Prediction secondMaxPrediction = predictions.second;
+                // Invoke the interpreter to predict the image
+                float[][] outputArray = new float[1][89];
+                interpreter.run(inputArray, outputArray);
 
-                maxConfidence = maxPrediction.confidence;
-                maxIndex = maxPrediction.index;
+                // Get the predicted class index and probability
+                int classIndex = argmax(outputArray[0]);
+                String className = classNames[classIndex];
+                float probability = outputArray[0][classIndex];
 
-                secondMaxConfidence = secondMaxPrediction.confidence;
-                secondMaxIndex = secondMaxPrediction.index;
+                Log.e("TAG", "Class name: " + className + ", Probability: " + probability);
 
-                First_Result = classes[maxIndex];
-                Second_Result = classes[secondMaxIndex];
 
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                 image.compress(Bitmap.CompressFormat.PNG, 100, stream);
@@ -344,10 +306,8 @@ public class Diagnose_Plant_Activity extends AppCompatActivity {
                 inferenceTime = SystemClock.uptimeMillis() - inferenceTime;
 
                 Intent intent = new Intent(getApplicationContext(), Diagnose_Plant_Result_Activity.class);
-                intent.putExtra("Diagnose_First_Resut", First_Result);
-                intent.putExtra("Diagnose_Second_Resut", Second_Result);
-                intent.putExtra("maxConfidence", maxConfidence);
-                intent.putExtra("secondMaxConfidence", secondMaxConfidence);
+                intent.putExtra("Diagnose_First_Resut", className);
+                intent.putExtra("maxConfidence", probability);
                 intent.putExtra("image", byteArray);
                 intent.putExtra("inferenceTime", inferenceTime);
                 startActivity(intent);

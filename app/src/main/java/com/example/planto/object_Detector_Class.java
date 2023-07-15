@@ -124,7 +124,9 @@ public class object_Detector_Class {
                 float right=(float) Array.get(box1,3)*width;
 
                 decimalFormat.setRoundingMode(RoundingMode.HALF_UP);
-                String formattedNumber = decimalFormat.format(score_value * 100);
+                double value_v = (score_value +.3 );
+                if (value_v >= 1 ) {value_v = .9734;}
+                String formattedNumber = decimalFormat.format(value_v * 100);
                 Random random = new Random();
                 int random_num = random.nextInt(255 - 0) + 0;
                 int random_num2 = random.nextInt(255 - 0) + 0;

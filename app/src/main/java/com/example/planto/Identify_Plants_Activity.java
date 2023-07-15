@@ -41,7 +41,6 @@ public class Identify_Plants_Activity extends AppCompatActivity implements Adapt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_identify_plants);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         textView1 = findViewById(R.id.cool_tv1);
         textView2 = findViewById(R.id.cool_tv2);
         ar_imgAnimation1 = findViewById(R.id.ar_imgAnimation1);

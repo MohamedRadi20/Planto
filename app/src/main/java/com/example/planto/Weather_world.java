@@ -68,7 +68,6 @@ public class Weather_world extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather_world);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         final EditText editText = findViewById(R.id.searchCity);
         final Button submit_btn = findViewById(R.id.submit_btn);

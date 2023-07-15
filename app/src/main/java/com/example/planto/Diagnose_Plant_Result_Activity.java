@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -34,7 +35,7 @@ public class Diagnose_Plant_Result_Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_diagnose_plant_result);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Log.e("TAG","fuck final_v1");
 
         progressBar = findViewById(R.id.progress_bar);
         textViewProgress = findViewById(R.id.text_view_progress);
@@ -47,14 +48,13 @@ public class Diagnose_Plant_Result_Activity extends AppCompatActivity {
         Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
 
         String diagnose_first_result = getIntent().getStringExtra("Diagnose_First_Resut");
-        String diagnose_second_result = getIntent().getStringExtra("Diagnose_Second_Resut");
         float maxConfidence = getIntent().getFloatExtra("maxConfidence",0);
-        float secondMaxConfidence = getIntent().getFloatExtra("secondMaxConfidence",0);
         long inferenceTime = getIntent().getLongExtra("inferenceTime",0);
+        Log.e("TAG","fuck final_v2");
+
 
 
         maxConfidence = maxConfidence * 100;
-        secondMaxConfidence = secondMaxConfidence * 100;
 
         String formattedMaxConfidence = String.format("%.2f", maxConfidence);
 
@@ -77,8 +77,7 @@ public class Diagnose_Plant_Result_Activity extends AppCompatActivity {
 
 
         accumulation_of_the_result += String.format("%s: \n",diagnose_first_result);
-        accumulation_of_the_result += String.format("%s:  %.1f%%",diagnose_second_result, secondMaxConfidence);
-        accumulation_of_the_result += "\n inferenceTime_seconds: " + inferenceTime_seconds;
+        accumulation_of_the_result += "inferenceTime_seconds: " + inferenceTime_seconds;
 
             if(diagnose_first_result != ""){
                 textView_result.setText(accumulation_of_the_result);

@@ -143,7 +143,6 @@ public class Home_Fragment extends Fragment {
 
     }
 
-
     private void getWeatherForCurrentLocation() {
 
         mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
@@ -186,25 +185,6 @@ public class Home_Fragment extends Fragment {
         mLocationManager.requestLocationUpdates(Location_Provider, MIN_TIME, MIN_DISTANCE, mLocationListner);
 
     }
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-
-        if (requestCode == REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(getActivity().getApplicationContext(), "Locationget Succesffully", Toast.LENGTH_SHORT).show();
-                getWeatherForCurrentLocation();
-            } else {
-                //user denied the permission
-            }
-        }
-
-
-    }
-
 
     private void letsdoSomeNetworking(RequestParams params) {
         AsyncHttpClient client = new AsyncHttpClient();

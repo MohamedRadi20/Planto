@@ -75,7 +75,6 @@ public class Plantune_Activity extends AppCompatActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plantune);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         edPlantName = findViewById(R.id.plant_name_et);
         btnSubmit = findViewById(R.id.submit_btn);

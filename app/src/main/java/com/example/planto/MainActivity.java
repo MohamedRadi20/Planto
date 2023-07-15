@@ -43,31 +43,26 @@ public class MainActivity extends AppCompatActivity {
     public void plant_disease_service(View view) {
         Intent intent = new Intent(getApplicationContext(), Diagnose_Plant_Activity.class);
         startActivity(intent);
-        finish();
     }
 
     public void identify_plant_service(View view) {
         Intent intent = new Intent(getApplicationContext(), Identify_Plants_Activity.class);
         startActivity(intent);
-        finish();
     }
 
     public void separate_seeds_service(View view) {
         Intent intent = new Intent(getApplicationContext(), Soil_Activity.class);
         startActivity(intent);
-        finish();
     }
 
     public void ThreeD_AR(View view) {
         Intent intent = new Intent(getApplicationContext(), Activity_3D.class);
         startActivity(intent);
-        finish();
     }
 
     public void Plantune_service(View view) {
         Intent intent = new Intent(getApplicationContext(), Plantune_Activity.class);
         startActivity(intent);
-        finish();
     }
 
 
@@ -129,13 +124,11 @@ public class MainActivity extends AppCompatActivity {
 //        if (restorePrefData() == false) {
 //            Intent mainActivity = new Intent(getApplicationContext(),Intro_Activity.class );
 //            startActivity(mainActivity);
-//            finish();
 //        }
 //        FirebaseUser user = mAuth.getCurrentUser();
 //        if (user == null) {
 //            Intent intent = new Intent(getApplicationContext(),Login_Activity.class);
 //            startActivity(intent);
-//            finish();
 //        }
     }
 
