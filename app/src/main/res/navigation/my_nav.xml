@@ -28,6 +28,6 @@
     <fragment
         android:id="@+id/fifthFragment"
         android:name="com.example.planto.Community_Fragment"
-        android:label="Comunity"
+        android:label="Community"
         tools:layout="@layout/fragment_community" />
 </navigation>
