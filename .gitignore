@@ -1,57 +1,44 @@
+# === IDE & System ===
 *.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
+.idea/
 .DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
+
+# === Build System ===
+.gradle/
+build/
+.cxx/
+.externalNativeBuild/
+captures/
 local.properties
 
-# Built application files
+# === Compiled Code ===
+*.class
+*.dex
 *.apk
 *.ap_
+*.so.dSYM/
 
-# Files for the ART/Dalvik VM
-*.dex
-
-# Java class files
-*.class
-
-# Built .aar and .jar files
+# === Android Libraries ===
 /libs/*.aar
 /libs/*.jar
 
-# Gradle build files and .gradle directories
-.gradle/
-build/
-
-# Local configuration file (sdk path, etc)
-local.properties
-
-# Thumbnails
-*.iml
-.idea/
+# === IntelliJ / Android Studio ===
+.idea/caches
+.idea/libraries
+.idea/modules.xml
+.idea/workspace.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
 *.iws
 *.ipr
-*.iws
-
-# Android Studio Navigation editor temp files
 .navigation/
 
-# External native build folder generated in Android Studio 2.2 and later
-.externalNativeBuild/
-
-# NDK debug files
-*.so.dSYM/
-
-# Proguard files
+# === Proguard Files ===
 proguard-project.txt
 proguard-rules.pro
 proguard-android.txt
+
+# === Firebase & Secrets ===
+**/google-services.json
+**/credentials.json
+**/*firebase-adminsdk*.json
